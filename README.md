@@ -75,3 +75,15 @@ Save the file and close the text editor. The last step: Restart ser2net.
 ### Defining the ser2net-port in FHEM
 `define Heating WKRCD4 192.168.1.23:2000@9600 60`  
 It's basically like a normal define, just change the device to `IP:PORT`. (The port is 2000 in our case!)
+
+## List of get/set values
+  * Hz-KlSteilheit
+  * Hz-Temp-BasisSoll
+  * Hz-Temp-Einsatz
+  * Hz-Temp-RaumSoll
+  * Ww-Temp-Soll
+  * Hz-Abschaltung
+  * Ww-Abschaltung
+  * Ww-Becken-Temp-Soll
+  * Ww-Hysterese
+  * Ww-Becken-Hysterese
