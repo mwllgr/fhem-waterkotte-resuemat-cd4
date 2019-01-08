@@ -44,7 +44,7 @@ Example command:
 `01 13` - Write memory (Check the code of the module for more information, the command is different compared to the read command! **Don't destroy your heat pump!**)
 
 ### Response
-Response for command `10 02 01 15 00e3 0001 10 03 73a2` as an example:
+Response for command `10 02 01 15 00E3 0001 10 03 73A2` as an example:
 
 `16 10 02 00 17 00 10 03 7200`  
 
