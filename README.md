@@ -177,3 +177,6 @@ It's basically like a normal define, just change the device to `IP:PORT`. (The p
   * Ww-Zeit-Aus
   * Ww-Zeit-Ein
   * Zeit
+
+## Example plots
+Check out the root folder of the repository to see some screenshots of plots.
