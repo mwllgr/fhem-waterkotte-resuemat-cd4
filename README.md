@@ -39,4 +39,8 @@ Example command:
 `03` - ETX (End of Text)  
 `FE17` - CRC-16 checksum of CMD, start address and bytes to read (Poly 8005, Init 0, Lsb 0)
 
+### Available CMDs
+`01 15` - Read memory  
+`01 13` - Write memory (Check the code of the module for more information, the command is different compared to the read command! **Don't destroy your heat pump!**)
+
 If you need more information about the protocol, visit [https://www.symcon.de/forum/threads/2092-ComPort-und-Waterkotte-abfragen](https://www.symcon.de/forum/threads/2092-ComPort-und-Waterkotte-abfragen) (German).
