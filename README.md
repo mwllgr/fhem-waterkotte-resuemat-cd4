@@ -4,6 +4,8 @@ Based on [98_WKRCD4.pm](https://svn.fhem.de/fhem/trunk/fhem/contrib/98_WKRCD4.pm
 
 Can be used to request/change settings from older Waterkotte heat pumps with the Resümat CD4 control unit via the RS232 port.
 
+**Attention: The module does _not_ work on all Resümat CD4 control units. Tested on software version 8011. If it does not work for you,  try to use the official module as seen in the [FHEM wiki](https://wiki.fhem.de/wiki/Waterkotte_heat_pump_with_Res%C3%BCmat_CD4): It uses different memory addresses.**
+
 ## Usage
 Just copy `98_WKRCD4.pm` into the FHEM/ folder of your FHEM installation.  
 Here's an example of the full path: `/opt/fhem/FHEM/98_WKRCD4.pm`
