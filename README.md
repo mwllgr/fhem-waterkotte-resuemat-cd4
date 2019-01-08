@@ -54,3 +54,24 @@ In that case, it would be `00`, because address `00e3` is the field "Ww-Abschalt
 
 ### Links
 If you need more information about the protocol, visit [https://www.symcon.de/forum/threads/2092-ComPort-und-Waterkotte-abfragen](https://www.symcon.de/forum/threads/2092-ComPort-und-Waterkotte-abfragen) (German).
+
+## Using ser2net for serial communication over the network
+Install ser2net by opening a terminal/SSH session:  
+`sudo apt-get install ser2net -y`
+
+After that, edit `/etc/ser2net.conf` with your favorite text editor.  
+`sudo nano /etc/ser2net.conf`
+
+Go to the end of the file (Ctrl+W, Ctrl+V in nano) and make sure to comment out the BANNER line and the 4 default entries (2000:telnet, 2001:telnet, 3000:telnet, 3001:telnet) by prepending a `#` to each line.
+
+At the end of the file, add the following line:  
+`2000:raw:0:/dev/ttyUSB0:9600 NONE 1STOPBIT 8DATABITS`
+
+`2000` is the used port, `raw` is the mode, `/dev/ttyUSB0` the device (change it if you have to) and `9600` is the speed/baud rate.
+
+Save the file and close the text editor. The last step: Restart ser2net.  
+`sudo /etc/init.d/ser2net restart`
+
+### Defining the ser2net-port in FHEM
+`define Heating WKRCD4 192.168.1.23:2000@9600 60`  
+It's basically like a normal define, just change the device to `IP:PORT`. (The port is 2000 in our case!)
