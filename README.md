@@ -79,6 +79,9 @@ Save the file and close the text editor. The last step: Restart ser2net.
 `define Heating WKRCD4 192.168.1.23:2000@9600 60`  
 It's basically like a normal define, just change the device to `IP:PORT`. (The port is 2000 in our case!)
 
+## Screenshots
+Check out the `img/` folder of the repository to see some screenshots of SVG-Plots and a ReadingsGroup.
+
 ## List of get/set values
   * Hz-KlSteilheit
   * Hz-Temp-BasisSoll
@@ -180,6 +183,3 @@ It's basically like a normal define, just change the device to `IP:PORT`. (The p
   * Ww-Zeit-Aus
   * Ww-Zeit-Ein
   * Zeit
-
-## Screenshots
-Check out the `img/` folder of the repository to see some screenshots of plots and a ReadingsGroup.
