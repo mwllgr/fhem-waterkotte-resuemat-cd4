@@ -56,11 +56,11 @@ In that case, it would be `00`, because address `00e3` is the field "Ww-Abschalt
 `7200` is the checksum once again.
 
 ### Data types
-  * Floats    -    IEEE float notation (4 byte)
-  * Integers  -    1 or 2 bytes
-  * Binary    -    1 byte
-  * Date      -    3 bytes (DD MM YY)
-  * Time      -    3 bytes (SS MM HH)
+  * Floats &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; IEEE float notation (4 byte)
+  * Integers &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 1 or 2 bytes
+  * Binary &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 1 byte
+  * Date &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 3 bytes (DD MM YY)
+  * Time &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 3 bytes (SS MM HH)
 
 ### Links
 If you need more information about the protocol, visit [https://www.symcon.de/forum/threads/2092-ComPort-und-Waterkotte-abfragen](https://www.symcon.de/forum/threads/2092-ComPort-und-Waterkotte-abfragen) (German).
