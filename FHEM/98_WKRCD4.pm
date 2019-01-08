@@ -37,6 +37,7 @@ my %WKRCD4_gets = (
     "Ww-Becken-Temp-Soll" => "Ww-Becken-Temp-Soll",
     "Ww-Hysterese" => "Ww-Hysterese",
     "Ww-Becken-Hysterese" => "Ww-Becken-Hysterese"
+    # ---- Values do not work as expected ----
     # "Ww-Zeit-Aus" => "Ww-Zeit-Aus",
     # "Ww-Zeit-Ein" => "Ww-Zeit-Ein"
 );
@@ -559,6 +560,7 @@ sub parseReadings
         # }
         # $Status = encode ("utf8", $Status);
         # readingsBulkUpdate( $hash, "Status", $Status);
+        # ----- Disabled part END -----
         readingsEndUpdate( $hash, 1 );
     }
     else
