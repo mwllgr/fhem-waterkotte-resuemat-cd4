@@ -43,4 +43,14 @@ Example command:
 `01 15` - Read memory  
 `01 13` - Write memory (Check the code of the module for more information, the command is different compared to the read command! **Don't destroy your heat pump!**)
 
+### Response
+Response for command `10 02 01 15 00e3 0001 10 03 73a2` as an example:
+
+`16 10 02 00 17 00 10 03 7200`  
+
+The bytes between `17` and `10` are the received data bytes.  
+In that case, it would be `00`, because address `00e3` is the field "Ww-Abschaltung" (German for 'Warm water disabled'). At the time of the request, warm water was enabled, so the answer is `0`, not `1`.  
+`7200` is the checksum once again.
+
+### Links
 If you need more information about the protocol, visit [https://www.symcon.de/forum/threads/2092-ComPort-und-Waterkotte-abfragen](https://www.symcon.de/forum/threads/2092-ComPort-und-Waterkotte-abfragen) (German).
