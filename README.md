@@ -37,10 +37,10 @@ Example command:
 `02` - STX (Start of Text)  
 `01 15` - CMD (Heat pump command, 01 15 means "Read memory")  
 `0000` - Start address  
-`0002` - Bytes to read after start address  
+`0002` - Bytes to read after start address (if you start at 0x00, the max value is 0x152 with SW-Version 8011)  
 `10` - DLE (Data Link Escape)  
 `03` - ETX (End of Text)  
-`FE17` - CRC-16 checksum of CMD, start address and bytes to read (Poly 8005, Init 0, Lsb 0)
+`FE17` - CRC-16 checksum of CMD, start address and bytes to read (More information below)
 
 ### Available CMDs
 `01 15` - Read memory  
@@ -54,6 +54,20 @@ Response for command `10 02 01 15 00E3 0001 10 03 73A2` as an example:
 The bytes between `17` and `10` are the received data bytes.  
 In that case, it would be `00`, because address `00e3` is the field "Ww-Abschaltung" (German for 'Warm water disabled'). At the time of the request, warm water was enabled, so the answer is `0`, not `1`.  
 `7200` is the checksum once again.
+
+### Calculating a CRC-16
+Some people at the IP-Symcom forums already created [two PHP scripts to calculate the CRC-16](https://www.symcon.de/forum/threads/2092-ComPort-und-Waterkotte-abfragen/page2).  
+Alternatively, you can look on the web for scripts/pages that can calculate a `CRC16_BUYPASS` or a custom CRC-16. Here are the parameters:  
+
+CRC-Order: `16`  
+Input type: `Hex`  
+Polynomial: `0x8005`  
+Initial value: `0x0`  
+LSB/Final Xor Value: `0x0`  
+Input/data reflected/reversed: `No`  
+Result reflected/reversed: `No`  
+
+For me, [crccalc.com](https://crccalc.com/?crc=01%2015%200000%200002&method=crc16&datatype=hex) worked well. Just enter the part of the command between `10 02` and `10 03` - that would be the CMD, the start address and the bytes to be read after the start address. Make sure to choose CRC-16, the correct result is `CRC-16/BUYPASS`. 
 
 ### Data types
   * Floats -----> IEEE float notation (4 byte)
