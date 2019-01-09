@@ -101,7 +101,14 @@ Save the file and close the text editor. The last step: Restart ser2net.
 It's basically like a normal define, just change the device to `IP:PORT`. (The port is 2000 in our case!)
 
 ## Screenshots
-Check out the `img/` folder of the repository to see some screenshots of SVG-Plots and a ReadingsGroup.
+### SVG plot: Outside temperature
+![Plot: Outside temp](/img/scr_svg-plot_aussentemp.png "Plot: Outside temp")
+
+### SVG plot: Flow/return flow
+![Plot: Flow/return](/img/scr_svg-plot_vor-ruecklauf.png "Plot: Flow/return")
+
+### ReadingsGroup: Status information
+![ReadingsGroup](/img/scr_readingsgroup_heizung.png "ReadingsGroup")
 
 ## List of get/set values
   * Hz-KlSteilheit
