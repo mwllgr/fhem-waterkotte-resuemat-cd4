@@ -71,7 +71,7 @@ For me, [crccalc.com](https://crccalc.com/?crc=01%2015%200000%200002&method=crc1
 
 ### Data types
   * Floats -----> IEEE float notation (4 byte)
-  * Integers ---> 1 or 2 bytes
+  * Integers ---> 1 or 2 bytes (8 or 16 bits)
   * Binary -----> 1 byte
   * Date -------> 3 bytes (DD MM YY)
   * Time -------> 3 bytes (SS MM HH)
