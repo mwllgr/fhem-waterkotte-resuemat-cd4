@@ -52,7 +52,7 @@ Response for command `10 02 01 15 00E3 0001 10 03 73A2` as an example:
 `16 10 02 00 17 00 10 03 7200`  
 
 The bytes between `17` and `10` are the received data bytes.  
-In that case, it would be `00`, because address `00e3` is the field "Ww-Abschaltung" (German for 'Warm water disabled'). At the time of the request, warm water was enabled, so the answer is `0`, not `1`.  
+In that case, it would be `00`, because address `00E3` is the field "Ww-Abschaltung" (German for 'Warm water disabled'). At the time of the request, warm water was enabled, so the answer is `0`, not `1`.  
 `7200` is the checksum once again.
 
 ### Calculating a CRC-16
