@@ -121,6 +121,7 @@ It's basically like a normal define, just change the device to `IP:PORT`. (The p
   * Ww-Becken-Temp-Soll
   * Ww-Hysterese
   * Ww-Becken-Hysterese
+  * ... more available but disabled by default.
 
 ## List of readings
   * AnalogKorrFaktor
