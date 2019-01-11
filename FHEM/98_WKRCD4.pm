@@ -137,7 +137,7 @@ my %frameReadings = (
  'Ww-Becken-Hysterese'            => { addr => 0x000F6, bytes => 0x0004, fmat => '%0.1f', unp => 'f<', min => 0.0, max => 15.0 },
  'Temp-QAus-Min'            => { addr => 0x00108, bytes => 0x0004, fmat => '%0.1f', unp => 'f<' },
  'Temp-Verdampfer-Min'            => { addr => 0x0010C, bytes => 0x0004, fmat => '%0.1f', unp => 'f<' },
- 'AnalogKorrFaktor'            => { addr => 0x00116, bytes => 0x0004, fmat => '%0.1f', unp => 'f<' },
+ 'AnalogKorrFaktor'            => { addr => 0x00116, bytes => 0x0004, fmat => '%0.4f', unp => 'f<' },
  'FuehlerZaehler0' => { addr => 0x005B, bytes => 0x0002, unp => 'n' },
  'Ausfall-BetriebMode' => { addr => 0x0067, bytes => 0x0001, unp => 'B8' },
  'Ausfall-Do-Buffer' => { addr => 0x0068, bytes => 0x0001, unp => 'B8' },
