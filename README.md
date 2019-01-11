@@ -1,15 +1,12 @@
 # FHEM module for the Waterkotte Resümat CD4 control unit
 
-**This module will not work for your heat pump if the official one (by user [StefanStrobel](https://wiki.fhem.de/wiki/Benutzer:StefanStrobel)) works for you!** Successfully tested with a Resümat CD4 with software version 8011 on a _DS 5009.3_ heat pump.
+**This module will not work for your heat pump if the official one (by user [StefanStrobel](https://wiki.fhem.de/wiki/Benutzer:StefanStrobel)) works for you! - It uses different memory addresses!** Successfully tested with a Resümat CD4 with software version 8011 on a _DS 5009.3_ heat pump.
 
-Can be used to request/change settings from older Waterkotte heat pumps with the Resümat CD4 control unit via the RS232 port.
+If it does not work for you, try to use the official module as seen in the [FHEM wiki](https://wiki.fhem.de/wiki/Waterkotte_heat_pump_with_Res%C3%BCmat_CD4).  
+It should already be in the `contrib/` folder of your FHEM installation.
 
-Based on [98_WKRCD4.pm](https://svn.fhem.de/fhem/trunk/fhem/contrib/98_WKRCD4.pm). Take a look at the [FHEM wiki](https://wiki.fhem.de/wiki/Waterkotte_heat_pump_with_Res%C3%BCmat_CD4) for more information.
-
-
-
-**Attention: The module does _not_ work on all Resümat CD4 control units. Tested on software version 8011. If it does not work for you,  try to use the official module as seen in the [FHEM wiki](https://wiki.fhem.de/wiki/Waterkotte_heat_pump_with_Res%C3%BCmat_CD4): It uses different memory addresses.**  
-The official one should already be in the `contrib/` folder of your FHEM installation.
+Can be used to request/change settings from older Waterkotte heat pumps with the Resümat CD4 control unit via the RS232 port.  
+Based on [98_WKRCD4.pm](https://svn.fhem.de/fhem/trunk/fhem/contrib/98_WKRCD4.pm).
 
 ## Usage
 Just copy `98_WKRCD4.pm` into the FHEM/ folder of your FHEM installation.  
