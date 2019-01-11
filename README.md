@@ -1,6 +1,6 @@
 # FHEM module for the Waterkotte Resümat CD4 control unit
 
-**This module will not work for your heat pump if the official one (by user [StefanStrobel](https://wiki.fhem.de/wiki/Benutzer:StefanStrobel)) works for you!** It works for a Resümat CD4 with software version 8011 on a _DS 5009.3_ heat pump.
+**This module will not work for your heat pump if the official one (by user [StefanStrobel](https://wiki.fhem.de/wiki/Benutzer:StefanStrobel)) works for you!** Successfully tested with a Resümat CD4 with software version 8011 on a _DS 5009.3_ heat pump.
 
 Can be used to request/change settings from older Waterkotte heat pumps with the Resümat CD4 control unit via the RS232 port.
 
