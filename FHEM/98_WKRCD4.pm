@@ -34,29 +34,41 @@ my %WKRCD4_gets = (
     "Ww-Temp-Soll" => "Ww-Temp-Soll",
     "Hz-Abschaltung" => "Hz-Abschaltung",
     "Ww-Abschaltung" => "Ww-Abschaltung",
-    "Ww-Becken-Temp-Soll" => "Ww-Becken-Temp-Soll",
-    "Ww-Hysterese" => "Ww-Hysterese",
-    "Ww-Becken-Hysterese" => "Ww-Becken-Hysterese"
+    # ---- Values work but do not need to be changed often/normally ----
+    # ---- Just remove the # if you need them ----
+    # "Ww-Becken-Temp-Soll" => "Ww-Becken-Temp-Soll",
+    # "Ww-Hysterese" => "Ww-Hysterese",
+    # "Ww-Becken-Hysterese" => "Ww-Becken-Hysterese",
+    # "Kennwort" => "Kennwort",
+    # "Modem-Klingelzeit" => "Modem-Klingelzeit",
+    # "Fremdzugriff" => "Fremdzugriff",
+    # "Schluesselnummer" => "Schluesselnummer"
     # ---- Values do not work as expected ----
     # "Ww-Zeit-Aus" => "Ww-Zeit-Aus",
-    # "Ww-Zeit-Ein" => "Ww-Zeit-Ein"
+    # "Ww-Zeit-Ein" => "Ww-Zeit-Ein",
 );
 
 # list of Readings / values that can be written to the WP
 my %WKRCD4_sets = (
     "Hz-KlSteilheit" => "Hz-KlSteilheit",
-    "Hz-Temp-Einsatz" => "Hz-Temp-Einsatz",
     "Hz-Temp-BasisSoll" => "Hz-Temp-BasisSoll",
+    "Hz-Temp-Einsatz" => "Hz-Temp-Einsatz",
     "Hz-Temp-RaumSoll" => "Hz-Temp-RaumSoll",
     "Ww-Temp-Soll" => "Ww-Temp-Soll",
     "Hz-Abschaltung" => "Hz-Abschaltung",
     "Ww-Abschaltung" => "Ww-Abschaltung",
-    "Ww-Becken-Temp-Soll" => "Ww-Becken-Temp-Soll",
-    "Ww-Hysterese" => "Ww-Hysterese",
-    "Ww-Becken-Hysterese" => "Ww-Becken-Hysterese"
+    # ---- Values work but do not need to be changed often/normally ----
+    # ---- Just remove the # if you need them ----
+    # "Ww-Becken-Temp-Soll" => "Ww-Becken-Temp-Soll",
+    # "Ww-Hysterese" => "Ww-Hysterese",
+    # "Ww-Becken-Hysterese" => "Ww-Becken-Hysterese",
+    # "Kennwort" => "Kennwort",
+    # "Modem-Klingelzeit" => "Modem-Klingelzeit",
+    # "Fremdzugriff" => "Fremdzugriff",
+    # "Schluesselnummer" => "Schluesselnummer",
     # ---- Values do not work as expected ----
     # "Ww-Zeit-Aus" => "Ww-Zeit-Aus",
-    # "Ww-Zeit-Ein" => "Ww-Zeit-Ein"
+    # "Ww-Zeit-Ein" => "Ww-Zeit-Ein",
 );
 
 # Definition of the values that can be read / written
@@ -94,7 +106,7 @@ my %frameReadings = (
  'Ww-Zeit-Aus'                => { addr => 0x00E7, bytes => 0x0003, fmat => '%3$02d:%2$02d:%1$02d', unp => 'CCC' },
  'KomprBeginn-Zeit'                => { addr => 0x0048, bytes => 0x0003, fmat => '%3$02d:%2$02d:%1$02d', unp => 'CCC' },
  'KomprBeginn-Datum'                => { addr => 0x004B, bytes => 0x0003, fmat => '%02d.%02d.%02d', unp => 'CCC' },
- 'Kennwort'        => { addr => 0x0093, bytes => 0x0001, unp => 'C' },
+ 'Kennwort'        => { addr => 0x0093, bytes => 0x0001, unp => 'C', min => 0, max => 255 },
  'Hz-Messergebnis'            => { addr => 0x00040, bytes => 0x0004, fmat => '%0.1f', unp => 'f<' },
  'Ww-Messergenis'            => { addr => 0x00044, bytes => 0x0004, fmat => '%0.1f', unp => 'f<' },
  'KomprBetrStunden'            => { addr => 0x0004F, bytes => 0x0004, fmat => '%0.1f', unp => 'f<' },
