@@ -42,7 +42,7 @@ my %WKRCD4_gets = (
     # "Kennwort" => "Kennwort",
     # "Modem-Klingelzeit" => "Modem-Klingelzeit",
     # "Fremdzugriff" => "Fremdzugriff",
-    # "Schluesselnummer" => "Schluesselnummer"
+    # "Schluesselnummer" => "Schluesselnummer",
     # ---- Values do not work as expected ----
     # "Ww-Zeit-Aus" => "Ww-Zeit-Aus",
     # "Ww-Zeit-Ein" => "Ww-Zeit-Ein",
