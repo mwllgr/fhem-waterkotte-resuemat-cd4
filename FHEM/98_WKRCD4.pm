@@ -43,9 +43,6 @@ my %WKRCD4_gets = (
     # "Modem-Klingelzeit" => "Modem-Klingelzeit",
     # "Fremdzugriff" => "Fremdzugriff",
     # "Schluesselnummer" => "Schluesselnummer",
-    # ---- Values do not work as expected ----
-    # "Ww-Zeit-Aus" => "Ww-Zeit-Aus",
-    # "Ww-Zeit-Ein" => "Ww-Zeit-Ein",
 );
 
 # list of Readings / values that can be written to the WP
@@ -66,9 +63,6 @@ my %WKRCD4_sets = (
     # "Modem-Klingelzeit" => "Modem-Klingelzeit",
     # "Fremdzugriff" => "Fremdzugriff",
     # "Schluesselnummer" => "Schluesselnummer",
-    # ---- Values do not work as expected ----
-    # "Ww-Zeit-Aus" => "Ww-Zeit-Aus",
-    # "Ww-Zeit-Ein" => "Ww-Zeit-Ein",
 );
 
 # Definition of the values that can be read / written
