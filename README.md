@@ -17,7 +17,7 @@ After that, make sure to enable the module by restarting FHEM with `shutdown res
 ### Defining it
 `define <Name> WKRCD4 <Device>@<Speed> <Read-Interval>`  
 
-You can use a USB-to-RS232-converter and plug it into your FHEM server. Most of these devices use `/dev/ttyUSB0` as the device path but if you're unsure, just check the syslog with `cat /var/log/syslog` after plugging it in.
+You can use a USB-to-RS232-converter and plug it into your FHEM server. Most of these devices use `/dev/ttyUSB0` as the device path but if you're unsure, just check the syslog with `cat /var/log/syslog | grep tty` after plugging it in.
 
 The default speed/baud rate is `9600`. The default read interval is `60` (poll every minute).
 
