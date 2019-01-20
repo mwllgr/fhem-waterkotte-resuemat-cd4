@@ -34,7 +34,6 @@ my %WKRCD4_gets = (
     "Ww-Temp-Soll" => "Ww-Temp-Soll",
     "Hz-Abschaltung" => "Hz-Abschaltung",
     "Ww-Abschaltung" => "Ww-Abschaltung",
-    "Betriebs-Mode" => "Betriebs-Mode",
     # ---- Values work but do not need to be changed often/normally ----
     # ---- Just remove the # if you need them ----
     # "Ww-Becken-Temp-Soll" => "Ww-Becken-Temp-Soll",
