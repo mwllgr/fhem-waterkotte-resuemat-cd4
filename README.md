@@ -128,11 +128,13 @@ Values with a `(-)` in front of them are commented out by default and can be ena
 
 ## List of readings
   * AnalogKorrFaktor
+  * Ausfaelle
   * Ausfall-BetriebMode
   * Ausfall-Datum
   * Ausfall-Di-Buffer
   * Ausfall-Do-Buffer
   * Ausfall-FuehlAusfall
+  * Ausfall-FuehlKurzsch
   * Ausfall-RaumAusfall
   * Ausfall-RaumKurzsch
   * Ausfall-Reset
@@ -146,13 +148,24 @@ Values with a `(-)` in front of them are commented out by default and can be ena
   * Ausfall-Temp-WQu-Ein
   * Ausfall-Temp-WWasser
   * Ausfall-Zeit
+  * Betriebs-Mode
   * Betriebszustaende
   * CPU-Boot-Datum
   * CPU-Boot-Zeit
+  * CRC-Summe
   * Datum
   * Di-Buffer
   * Do-Buffer
+  * Do-Handkanal
+  * Do-Handkanal-Ein
+  * Estrich-Aufhz
+  * Freigabe-Beckenwasser
   * Fremdzugriff
+  * FuehlRaum-Ausfall
+  * FuehlRaum-KurzSchl
+  * FuehlRaum-Zaehler0
+  * Fuehler-Ausfall
+  * Fuehler-KurzSchl
   * FuehlerZaehler0
   * Hz
   * Hz-Abschaltung
@@ -161,10 +174,14 @@ Values with a `(-)` in front of them are commented out by default and can be ena
   * Hz-Begrenzung
   * Hz-Ext-Anhebung
   * Hz-Ext-Freigabe
+  * Hz-Ext-TempRueckl-Soll
+  * Hz-ExtSteuerung
   * Hz-Hysterese
   * Hz-KlSteilheit
   * Hz-Messergebnis
   * Hz-PumpenNachl
+  * Hz-Raum-Einfluss
+  * Hz-SchnellAufhz
   * Hz-Stufe2-Begrenzung
   * Hz-Temp-BasisSoll
   * Hz-Temp-Einsatz
@@ -172,15 +189,18 @@ Values with a `(-)` in front of them are commented out by default and can be ena
   * Hz-Zeit-Aus
   * Hz-Zeit-Ein
   * Kennwort
+  * Kompr-Mess-Reset
   * KomprBeginn-Datum
   * KomprBeginn-Zeit
   * KomprBetrStunden
+  * Mess-Reset
   * Messbegin-Datum
   * Messbegin-Zeit
   * Mode-Heizung
   * Mode-Wasser
   * Modem-Klingelzeit
   * Schluesselnummer
+  * St2-bei-EvuAbsch
   * Status-Gesamt
   * Status-Heizung
   * Status-Stufe2
@@ -192,6 +212,8 @@ Values with a `(-)` in front of them are commented out by default and can be ena
   * Temp-Aussen-24h
   * Temp-Kondensator
   * Temp-QAus-Min
+  * Temp-Raum
+  * Temp-Raum-1h
   * Temp-Ruecklauf
   * Temp-Ruecklauf-Soll
   * Temp-Verdampfer
@@ -200,10 +222,14 @@ Values with a `(-)` in front of them are commented out by default and can be ena
   * Temp-WQuelle-Aus
   * Temp-WQuelle-Ein
   * Uhrzeit
+  * Unterbrechungen
   * Unterdr-Warn-Ausgang
   * Unterdr-Warn-Eingang
   * Unterdr-Warn-Sonstige
   * Versions-Datum
+  * Warnung-Ausgang
+  * Warnung-Eingang
+  * Warnung-Sonstige
   * Ww
   * Ww-Abschaltung
   * Ww-Becken-Hysterese
