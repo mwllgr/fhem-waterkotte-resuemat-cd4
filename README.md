@@ -119,10 +119,12 @@ It's basically like a normal define, just change the device to `IP:PORT`. (The p
   * Ww-Temp-Soll
   * Hz-Abschaltung
   * Ww-Abschaltung
-  * Ww-Becken-Temp-Soll
-  * Ww-Hysterese
-  * Ww-Becken-Hysterese
-  * ... more available but disabled by default.
+  * (-) Ww-Becken-Temp-Soll
+  * (-) Ww-Hysterese
+  * (-) Ww-Becken-Hysterese
+  * ... more available but not added to set list.
+
+Values with a `(-)` in front of them are commented out by default and can be enabled by removing the precending `#` in the code of the module.
 
 ## List of readings
   * AnalogKorrFaktor
