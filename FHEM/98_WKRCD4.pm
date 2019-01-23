@@ -15,6 +15,11 @@
 #       "Status"-Reading entfernt (kann aber unten aktiviert werden, einfach Kommentar-# entfernen)
 #       Wakeup-Command geändert, als Nebeneffekt wird die Aussentemperatur öfters abgefragt
 #       WARNING bezüglich set hinzugefügt
+#
+# ---- !! WARNING !! ----
+# This module could destroy your heating if something goes extremely wrong!
+# Be careful, especially with set commands.
+# ---- END OF WARNING ----
 
 package main;
 
