@@ -203,7 +203,7 @@ my %frameReadings = (
  'Freigabe-Beckenwasser'    => { addr => 0x113, bytes => 0x001, unp => 'C', min => 0, max => 1 },
  # ----
  'Ww-Temp'                  => { addr => 0x030, bytes => 0x004, fmat => '%0.1f', unp => 'f<' },
- 'Betriebs-Mode'            => { addr => 0x0FD, bytes => 0x003, fmat => '%02d.%02d.%02d', unp => 'CCC' },
+ 'Betriebs-Mode'            => { addr => 0x0FD, bytes => 0x003, fmat => '%d.%d.%d', unp => 'CCC' },
 );
 
 #
