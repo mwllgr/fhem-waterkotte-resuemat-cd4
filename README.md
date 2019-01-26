@@ -127,7 +127,11 @@ It's basically like a normal define, just change the device to `IP:PORT`. (The p
   * (-) Ww-Becken-Temp-Soll
   * (-) Ww-Hysterese
   * (-) Ww-Becken-Hysterese
-  * ... more available but not added to set list.
+  * (-) Kennwort
+  * (-) Modem-Klingelzeit
+  * (-) Fremdzugriff
+  * (-) Schluesselnummer
+  * ... more available but not added to set list or not tested - **be careful!**
 
 Values with a `(-)` in front of them are commented out by default and can be enabled by removing the precending `#` in the code of the module.
 
