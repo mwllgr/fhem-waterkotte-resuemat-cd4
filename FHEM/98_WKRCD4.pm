@@ -10,7 +10,7 @@
 #
 # Ausgeführte Änderungen:
 #       Speicheradressen für Readings an SW-Version 8011 angepasst
-#       Abfrage-Bytes auf 0x150 verringert (ansonsten zu viel für SW-Version 8011)
+#       Abfrage-Bytes auf 0x122 verringert (ansonsten zu viel für SW-Version 8011: max. ~150)
 #       Mehrere Get- und Set-Abfragen hinzugefügt
 #       "Status"-Reading entfernt (kann aber unten aktiviert werden, einfach Kommentar-# entfernen)
 #       Wakeup-Command geändert, als Nebeneffekt wird die Aussentemperatur öfters abgefragt
@@ -529,9 +529,9 @@ sub WKRCD4_GetUpdate($)
 
     $hash->{SerialRequests}++;
 
-    my $cmd = pack('C*', WPCMD($hash, 'read', 0, 0x0150));
+    my $cmd = pack('C*', WPCMD($hash, 'read', 0, 0x0122));
     $hash->{LastRequestAdr} = 0;
-    $hash->{LastRequestLen} = 0x0150;
+    $hash->{LastRequestLen} = 0x0122;
     $hash->{LastRequest}    = gettimeofday();
     DevIo_SimpleWrite( $hash, $cmd , 0 );
 
