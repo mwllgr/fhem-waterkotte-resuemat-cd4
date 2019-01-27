@@ -232,9 +232,9 @@ Values with a `(-)` in front of them are commented out by default and can be ena
   * Temp-WQuelle-Ein
   * Uhrzeit
   * Unterbrechungen
-  * Unterdr-Warn-Ausgang
-  * Unterdr-Warn-Eingang
-  * Unterdr-Warn-Sonstige
+  * Unterdr-Warnung-Ausgang
+  * Unterdr-Warnung-Eingang
+  * Unterdr-Warnung-Sonstige
   * Versions-Datum
   * Warnung-Ausgang
   * Warnung-Eingang
