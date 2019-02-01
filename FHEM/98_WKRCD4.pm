@@ -12,13 +12,14 @@
 #       Speicheradressen für Readings an SW-Version 8011 angepasst
 #       Abfrage-Bytes auf 0x122 verringert (ansonsten zu viel für SW-Version 8011: max. ~150)
 #       Mehrere Get- und Set-Abfragen hinzugefügt
+#       Min-/Max-Werte bei allen sets hinzugefügt
 #       "Status"-Reading entfernt (kann aber unten aktiviert werden, einfach Kommentar-# entfernen)
 #       Wakeup-Command geändert, als Nebeneffekt wird die Aussentemperatur öfters abgefragt
 #       WARNING bezüglich set hinzugefügt
 #
 # ---- !! WARNING !! ----
 # This module could destroy your heating if something goes extremely wrong!
-# Be careful, especially with set commands.
+# Be careful, especially with set commands. Min/max values MIGHT NOT be correct for your control unit.
 # ---- END OF WARNING ----
 
 package main;
@@ -156,41 +157,41 @@ my %frameReadings = (
  'CPU-Boot-Datum'           => { addr => 0x0AD, bytes => 0x003, fmat => '%02d.%02d.%02d', unp => 'CCC' },
  'CRC-Summe'                => { addr => 0x0B0, bytes => 0x002, unp => 'n' },
  'Hz-Abschaltung'           => { addr => 0x0B3, bytes => 0x001, unp => 'C', min => 0, max => 1 },
- 'Hz-Temp-Einsatz'          => { addr => 0x0B4, bytes => 0x004, fmat => '%0.1f', unp => 'f<', min => 7.0, max => 30.0},
- 'Hz-Temp-BasisSoll'        => { addr => 0x0B8, bytes => 0x004, fmat => '%0.1f', unp => 'f<', min => 16.0, max => 35.0 },
- 'Hz-KlSteilheit'           => { addr => 0x0BC, bytes => 0x004, fmat => '%0.1f', unp => 'f<', min => 5.0, max => 35.0 },
+ 'Hz-Temp-Einsatz'          => { addr => 0x0B4, bytes => 0x004, fmat => '%0.1f', unp => 'f<', min => 10.0, max => 30.0},
+ 'Hz-Temp-BasisSoll'        => { addr => 0x0B8, bytes => 0x004, fmat => '%0.1f', unp => 'f<', min => 15.0, max => 50.0 },
+ 'Hz-KlSteilheit'           => { addr => 0x0BC, bytes => 0x004, fmat => '%0.1f', unp => 'f<', min => 0.0, max => 100.0 },
  'Hz-SchnellAufhz'          => { addr => 0x0C0, bytes => 0x001, unp => 'C', min => 0, max => 1 },
  'Hz-Zeit-Ein'              => { addr => 0x0C1, bytes => 0x003, fmat => '%3$02d:%2$02d:%1$02d', unp => 'CCC' },
  'Hz-Zeit-Aus'              => { addr => 0x0C4, bytes => 0x003, fmat => '%3$02d:%2$02d:%1$02d', unp => 'CCC' },
  'Hz-Anhebung-Ein'          => { addr => 0x0C7, bytes => 0x003, fmat => '%3$02d:%2$02d:%1$02d', unp => 'CCC' },
  'Hz-Anhebung-Aus'          => { addr => 0x0CA, bytes => 0x003, fmat => '%3$02d:%2$02d:%1$02d', unp => 'CCC' },
- 'Hz-Temp-RaumSoll'         => { addr => 0x0CD, bytes => 0x004, fmat => '%0.1f', unp => 'f<', min => 5.0, max => 35.0 },
- 'Hz-Raum-Einfluss'         => { addr => 0x0D1, bytes => 0x001, unp => 'C', min => 0, max => 255 },
- 'Hz-Ext-Anhebung'          => { addr => 0x0D2, bytes => 0x004, fmat => '%0.1f', unp => 'f<' },
- 'Hz-Begrenzung'            => { addr => 0x0D6, bytes => 0x004, fmat => '%0.1f', unp => 'f<' },
- 'Hz-Stufe2-Begrenzung'     => { addr => 0x0DA, bytes => 0x004, fmat => '%0.1f', unp => 'f<' },
- 'Hz-Hysterese'             => { addr => 0x0DE, bytes => 0x004, fmat => '%0.1f', unp => 'f<' },
- 'Hz-PumpenNachl'           => { addr => 0x0E2, bytes => 0x001, unp => 'C' },
+ 'Hz-Temp-RaumSoll'         => { addr => 0x0CD, bytes => 0x004, fmat => '%0.1f', unp => 'f<', min => 15.0, max => 30.0 },
+ 'Hz-Raum-Einfluss'         => { addr => 0x0D1, bytes => 0x001, unp => 'C', min => 0, max => 200 },
+ 'Hz-Ext-Anhebung'          => { addr => 0x0D2, bytes => 0x004, fmat => '%0.1f', unp => 'f<', min => -5.0, max => 5.0 },
+ 'Hz-Begrenzung'            => { addr => 0x0D6, bytes => 0x004, fmat => '%0.1f', unp => 'f<', min => 10.0, max => 50.0 },
+ 'Hz-Stufe2-Begrenzung'     => { addr => 0x0DA, bytes => 0x004, fmat => '%0.1f', unp => 'f<', min => 10.0, max => 60.0 },
+ 'Hz-Hysterese'             => { addr => 0x0DE, bytes => 0x004, fmat => '%0.1f', unp => 'f<', min => 1.0, max => 3.0 },
+ 'Hz-PumpenNachl'           => { addr => 0x0E2, bytes => 0x001, unp => 'C', min => 0, max => 20 },
  'Ww-Abschaltung'           => { addr => 0x0E3, bytes => 0x001, unp => 'C', min => 0, max => 1 },
  'Ww-Zeit-Ein'              => { addr => 0x0E4, bytes => 0x003, fmat => '%3$02d:%2$02d:%1$02d', unp => 'CCC' },
  'Ww-Zeit-Aus'              => { addr => 0x0E7, bytes => 0x003, fmat => '%3$02d:%2$02d:%1$02d', unp => 'CCC' },
- 'Ww-Temp-Soll'             => { addr => 0x0EA, bytes => 0x004, fmat => '%0.1f', unp => 'f<', min => 20.0, max => 60.0 },
- 'Ww-Becken-Temp-Soll'      => { addr => 0x0EE, bytes => 0x004, fmat => '%0.1f', unp => 'f<', min => 5.0, max => 60.0 },
- 'Ww-Hysterese'             => { addr => 0x0F2, bytes => 0x004, fmat => '%0.1f', unp => 'f<', min => 0.0, max => 15.0 },
- 'Ww-Becken-Hysterese'      => { addr => 0x0F6, bytes => 0x004, fmat => '%0.1f', unp => 'f<', min => 0.0, max => 15.0 },
+ 'Ww-Temp-Soll'             => { addr => 0x0EA, bytes => 0x004, fmat => '%0.1f', unp => 'f<', min => 20.0, max => 55.0 },
+ 'Ww-Becken-Temp-Soll'      => { addr => 0x0EE, bytes => 0x004, fmat => '%0.1f', unp => 'f<', min => 20.0, max => 35.0 },
+ 'Ww-Hysterese'             => { addr => 0x0F2, bytes => 0x004, fmat => '%0.1f', unp => 'f<', min => 5.0, max => 10.0 },
+ 'Ww-Becken-Hysterese'      => { addr => 0x0F6, bytes => 0x004, fmat => '%0.1f', unp => 'f<', min => 0.5, max => 5.0 },
  'Unterdr-Warnung-Eingang'     => { addr => 0x0FA, bytes => 0x001, unp => 'B8' },
  'Unterdr-Warnung-Ausgang'     => { addr => 0x0FB, bytes => 0x001, unp => 'B8' },
  'Unterdr-Warnung-Sonstige'    => { addr => 0x0FC, bytes => 0x001, unp => 'B8' },
  'Betriebs-Mode'            => { addr => 0x0FD, bytes => 0x003, fmat => '%d.%d.%d', unp => 'CCC' },
- 'Modem-Klingelzeit'        => { addr => 0x100, bytes => 0x001, unp => 'C', min => 1, max => 6 },
+ 'Modem-Klingelzeichen'        => { addr => 0x100, bytes => 0x001, unp => 'C', min => 1, max => 6 },
  'Fremdzugriff'             => { addr => 0x101, bytes => 0x001, unp => 'C', min => 0, max => 1 },
  'Schluesselnummer'         => { addr => 0x102, bytes => 0x001, unp => 'C', min => 0, max => 255 },
  # ---- Might not be correct (1)
  'Hz-Ext-Freigabe'          => { addr => 0x103, bytes => 0x001, unp => 'C', min => 0, max => 1 },
- 'Hz-Ext-TempRueckl-Soll'   => { addr => 0x104, bytes => 0x004, fmat => '%0.1f', unp => 'f<' },
+ 'Hz-Ext-TempRueckl-Soll'   => { addr => 0x104, bytes => 0x004, fmat => '%0.1f', unp => 'f<', min => 20.0, max => 30.0 },
  # ---- End of (1)
- 'Temp-QAus-Min'            => { addr => 0x108, bytes => 0x004, fmat => '%0.1f', unp => 'f<' },
- 'Temp-Verdampfer-Min'      => { addr => 0x10C, bytes => 0x004, fmat => '%0.1f', unp => 'f<' },
+ 'Temp-QAus-Min'            => { addr => 0x108, bytes => 0x004, fmat => '%0.1f', unp => 'f<', min => -25.0, max => 20.0 },
+ 'Temp-Verdampfer-Min'      => { addr => 0x10C, bytes => 0x004, fmat => '%0.1f', unp => 'f<', min => -25.0, max => 20.0 },
  # ---- Might not be correct (2)
  'Estrich-Aufhz'            => { addr => 0x110, bytes => 0x001, unp => 'C', min => 0, max => 1 },
  'Hz-ExtSteuerung'          => { addr => 0x111, bytes => 0x001, unp => 'B8' },
@@ -199,7 +200,7 @@ my %frameReadings = (
  # ---- End of (2)
  'Do-Handkanal'             => { addr => 0x114, bytes => 0x001, unp => 'C', min => 0, max => 8 },
  'Do-Handkanal-Ein'         => { addr => 0x115, bytes => 0x001, unp => 'C', min => 0, max => 1 },
- 'AnalogKorrFaktor'         => { addr => 0x116, bytes => 0x004, fmat => '%0.4f', unp => 'f<', min => 1.000, max => 1.999 },
+ 'AnalogKorrFaktor'         => { addr => 0x116, bytes => 0x004, fmat => '%0.4f', unp => 'f<', min => 0.8000, max => 1.2000 },
  # Disabled because unsure if readings are correct:
  # 'Neu-Start'               => { addr => 0x120, bytes => 0x001, unp => 'C', min => 0, max => 1 },
  # 'Run-Flag'                => { addr => 0x121, bytes => 0x001, unp => 'C', min => 0, max => 1 },
