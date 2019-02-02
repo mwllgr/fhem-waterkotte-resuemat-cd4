@@ -45,7 +45,7 @@ my %WKRCD4_gets = (
     # "Ww-Hysterese" => "Ww-Hysterese",
     # "Ww-Becken-Hysterese" => "Ww-Becken-Hysterese",
     # "Kennwort" => "Kennwort",
-    # "Modem-Klingelzeit" => "Modem-Klingelzeit",
+    # "Modem-Klingelzeichen" => "Modem-Klingelzeichen",
     # "Fremdzugriff" => "Fremdzugriff",
     # "Schluesselnummer" => "Schluesselnummer",
 );
@@ -65,7 +65,7 @@ my %WKRCD4_sets = (
     # "Ww-Hysterese" => "Ww-Hysterese",
     # "Ww-Becken-Hysterese" => "Ww-Becken-Hysterese",
     # "Kennwort" => "Kennwort",
-    # "Modem-Klingelzeit" => "Modem-Klingelzeit",
+    # "Modem-Klingelzeichen" => "Modem-Klingelzeichen",
     # "Fremdzugriff" => "Fremdzugriff",
     # "Schluesselnummer" => "Schluesselnummer",
 );
