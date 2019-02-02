@@ -1,4 +1,3 @@
-#########################################################################
 # $Id$
 # fhem Modul für Waterkotte Wärmepumpe mit Resümat CD4 Steuerung
 # Vorlage: Modul WHR962, diverse Foreneinträge sowie Artikel über Auswertung der
@@ -379,7 +378,22 @@ sub WKRCD4_Set($@)
 
     if(!defined($WKRCD4_sets{$attr})) {
         my @cList = keys %WKRCD4_sets;
-        return "Unknown argument $attr, choose one of " . join(" ", @cList);
+        my $finalReturn;
+
+        foreach my $val (@cList)
+        {
+            my $current = $frameReadings{$val};
+            $finalReturn .= $val;
+
+            if($current->{min} == 0 && $current->{max} == 1 && ($current->{unp} eq "C" || $current->{unp} eq "n"))
+            {
+                $finalReturn .= ":0,1"
+            }
+
+            $finalReturn .= " ";
+        }
+
+        return "Unknown argument $attr, choose one of " . $finalReturn;
     }
 
     # get Hash pointer for the attribute requested from the global hash
