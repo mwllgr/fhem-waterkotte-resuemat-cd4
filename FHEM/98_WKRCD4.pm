@@ -156,7 +156,7 @@ my %frameReadings = (
  'CPU-Boot-Datum'           => { addr => 0x0AD, bytes => 0x003, fmat => '%02d.%02d.%02d', unp => 'CCC' },
  'CRC-Summe'                => { addr => 0x0B0, bytes => 0x002, unp => 'n' },
  'Hz-Abschaltung'           => { addr => 0x0B3, bytes => 0x001, unp => 'C', min => 0, max => 1 },
- 'Hz-Temp-Einsatz'          => { addr => 0x0B4, bytes => 0x004, fmat => '%0.1f', unp => 'f<', min => 10.0, max => 30.0},
+ 'Hz-Temp-Einsatz'          => { addr => 0x0B4, bytes => 0x004, fmat => '%0.1f', unp => 'f<', min => 10.0, max => 30.0 },
  'Hz-Temp-BasisSoll'        => { addr => 0x0B8, bytes => 0x004, fmat => '%0.1f', unp => 'f<', min => 15.0, max => 50.0 },
  'Hz-KlSteilheit'           => { addr => 0x0BC, bytes => 0x004, fmat => '%0.1f', unp => 'f<', min => 0.0, max => 100.0 },
  'Hz-SchnellAufhz'          => { addr => 0x0C0, bytes => 0x001, unp => 'C', min => 0, max => 1 },
