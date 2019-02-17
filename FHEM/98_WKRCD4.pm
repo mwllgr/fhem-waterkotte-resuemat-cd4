@@ -36,6 +36,7 @@ my %WKRCD4_gets = (
     "Hz-Temp-BasisSoll" => "Hz-Temp-BasisSoll",
     "Hz-Temp-Einsatz" => "Hz-Temp-Einsatz",
     "Hz-Temp-RaumSoll" => "Hz-Temp-RaumSoll",
+    "Hz-SchnellAufhz" => "Hz-SchnellAufhz",
     "Ww-Temp-Soll" => "Ww-Temp-Soll",
     "Hz-Abschaltung" => "Hz-Abschaltung",
     "Ww-Abschaltung" => "Ww-Abschaltung",
