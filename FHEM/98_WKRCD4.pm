@@ -17,6 +17,9 @@
 #       WARNING bezüglich set hinzugefügt
 #       Menüeinträge und Abfrage dieser per get implementiert
 #       Kommentare geändert, Stil weitestgehend vereinheitlicht
+#       Binäre Werte können nun auch gesetzt werden
+#       Datum/Uhrzeit-Felder können gesetzt werden
+#       Betriebs-Mode kann gesetzt werden
 #
 # ---- !! WARNING !! ----
 # This module could destroy your heating if something goes extremely wrong!
@@ -42,6 +45,8 @@ my %WKRCD4_gets = (
     "Ww-Temp-Soll" => "Ww-Temp-Soll",
     "Hz-Abschaltung" => "Hz-Abschaltung",
     "Ww-Abschaltung" => "Ww-Abschaltung",
+    "Uhrzeit" => "Uhrzeit",
+    "Datum" => "Datum",
     # ---- Values work but do not need to be changed often/normally ----
     # ---- Just remove the # if you need them ----
     # "Ww-Becken-Temp-Soll" => "Ww-Becken-Temp-Soll",
@@ -63,7 +68,8 @@ my %WKRCD4_sets = (
     "Ww-Temp-Soll" => "Ww-Temp-Soll",
     "Hz-Abschaltung" => "Hz-Abschaltung",
     "Ww-Abschaltung" => "Ww-Abschaltung",
-    "Unterdr-Warnung-Ausgang" => "Unterdr-Warnung-Ausgang",
+    "Uhrzeit" => "Uhrzeit",
+    "Datum" => "Datum",
     # ---- Values work but do not need to be changed often/normally ----
     # ---- Just remove the # if you need them ----
     # "Ww-Becken-Temp-Soll" => "Ww-Becken-Temp-Soll",
@@ -425,6 +431,7 @@ sub WKRCD4_Set($@)
 
             if($current->{min} == 0 && $current->{max} == 1 && ($current->{unp} eq "C" || $current->{unp} eq "n"))
             {
+              # Bool value, only 0 and 1 for set available
                 $finalReturn .= ":0,1"
             }
 
@@ -448,7 +455,11 @@ sub WKRCD4_Set($@)
     my $unp   = $properties->{unp};
 
     return "Error: A numerical value between $min and $max is expected, got $arg instead."
-        if(($arg !~ m/^[\d.]+$/ || $arg < $min || $arg > $max) && ($unp ne "B8"));
+        if(($arg !~ m/^[\d.]+$/ || $arg < $min || $arg > $max) && ($unp ne "B8" && $unp ne "CCC"));
+
+    my $vp;
+    my @value;
+    my $isSpecialValue = 0;
 
     # If it's a binary value, check for validity
     if($unp eq "B8" && $arg !~ /\b[01]{8}\b/)
@@ -456,9 +467,54 @@ sub WKRCD4_Set($@)
       return "Error: Binary values have to be 8 characters long and may only contain 0 and 1.";
     }
 
-    # Convert string to value needed for command
-    my $vp    = pack($unp, $arg);
-    my @value = unpack ('C*', $vp);
+    # Is it a date/time or a special value?
+    elsif($unp eq "CCC" && $properties->{fmat})
+    {
+      $isSpecialValue = 1;
+
+      my $splitter;
+      my $fmat = $properties->{fmat};
+      my @splitted;
+      my $result;
+
+      # Is it a time?
+      if($arg =~ /(0[0-9]|1[0-9]|2[0-4]):[0-5][0-9]:[0-5][0-9]/ && $fmat eq "%3$02d:%2$02d:%1$02d")
+      {
+        $splitter = ':';
+        @splitted = split($splitter, $arg);
+      }
+      # Is it a date?
+      elsif($arg =~ /(3[01]|[12][0-9]|0[1-9])\.(1[012]|0[1-9])\.(\d{2})/ && $fmat eq "%02d.%02d.%02d")
+      {
+        $splitter = '\.';
+        @splitted = split($splitter, $arg);
+      }
+      # Is it a Betriebs-Mode-change?
+      elsif($arg =~ /[1-5]\.[1-5]\.[12]/ && $attr eq "Betriebs-Mode")
+      {
+        $splitter = '\.';
+        @splitted = split($splitter, $arg);
+      }
+      # Nope, it's nothing.
+      else
+      {
+        return "Error: Field doesn't match any supported data type or input isn't valid for this operation.";
+      }
+
+      foreach my $current(@splitted)
+      {
+        $result .= pack('C', $current);
+      }
+
+      $vp = $result;
+      @value = unpack('C*', $vp);
+    }
+    else
+    {
+      # Convert string to value needed for command
+      $vp    = pack($unp, $arg);
+      @value = unpack ('C*', $vp);
+    }
 
     Log3 $name, 4, sprintf ("$name: Set - Will write $attr: %02x bytes starting from %02x with %s (%s) packed with $unp", $bytes, $addr, unpack ('H*', $vp), unpack ($unp, $vp));
     my $cmd = pack('C*', WPCMD($hash, 'write', $addr, $bytes, @value));
@@ -471,7 +527,14 @@ sub WKRCD4_Set($@)
     Log3 $name, 4, "Set - Called DevIo_SimpleWrite: " . unpack ('H*', $cmd);
     DevIo_SimpleWrite( $hash, $cmd , 0 );
 
-    return sprintf ("Wrote %02x bytes starting from %02x with %s (%s)", $bytes, $addr, unpack ('H*', $vp), unpack ($unp, $vp));
+    if($isSpecialValue)
+    {
+      return sprintf ("Wrote %02x bytes starting from %02x with %s", $bytes, $addr, unpack ('H*', $vp));
+    }
+    else
+    {
+      return sprintf ("Wrote %02x bytes starting from %02x with %s (%s)", $bytes, $addr, unpack ('H*', $vp), unpack ($unp, $vp));
+    }
 }
 
 #########################################################################
