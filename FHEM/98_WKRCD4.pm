@@ -15,6 +15,7 @@
 #       "Status"-Reading entfernt (kann aber unten aktiviert werden, einfach Kommentar-# entfernen)
 #       Wakeup-Command geändert, als Nebeneffekt wird die Aussentemperatur öfters abgefragt
 #       WARNING bezüglich set hinzugefügt
+#       Menü-Nummern und get für Menü-Nummer hinzugefügt
 #
 # ---- !! WARNING !! ----
 # This module could destroy your heating if something goes extremely wrong!
@@ -337,14 +338,45 @@ sub WKRCD4_Get($@)
 
     if(!$WKRCD4_gets{$attr}) {
         my @cList = keys %WKRCD4_gets;
-        return "Unknown argument $attr, choose one of " . join(" ", @cList);
+        my @rList = keys %frameReadings;
+
+        return "Unknown argument $attr, choose one of " . join(" ", @cList) . " menuEntry menuEntryHidden";
     }
 
+    my $properties;
+
     # get Hash pointer for the attribute requested from the global hash
-    my $properties = $frameReadings{$WKRCD4_gets{$attr}};
-    if(!$properties) {
-        return "No Entry in frameReadings found for $attr";
+    if($attr eq "menuEntry" || $attr eq "menuEntryHidden")
+    {
+        # Get properties (including menuEntry stuff)
+        $properties = $frameReadings{$arg};
+
+        if(!$properties) {
+            return "No Entry in frameReadings found for $attr";
+        }
+
+        my $menuEntry = substr($properties->{menu}, 0, 4);
+        my $menuEntryHiddenRaw = substr($properties->{menu}, -1);
+
+        my $menuEntryHidden = $menuEntryHiddenRaw eq "*";
+
+        if($attr eq "menuEntry")
+        {
+            return $menuEntry;
+        }
+        else
+        {
+            return $menuEntryHidden;
+        }
     }
+    else
+    {
+        $properties = $frameReadings{$WKRCD4_gets{$attr}};
+        if(!$properties) {
+            return "No Entry in frameReadings found for $attr";
+        }
+    }
+
 
     # get details about the attribute requested from its hash
     my $addr  = $properties->{addr};
