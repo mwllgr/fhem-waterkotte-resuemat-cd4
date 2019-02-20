@@ -15,7 +15,8 @@
 #       "Status"-Reading entfernt (kann aber unten aktiviert werden, einfach Kommentar-# entfernen)
 #       Wakeup-Command geändert, als Nebeneffekt wird die Aussentemperatur öfters abgefragt
 #       WARNING bezüglich set hinzugefügt
-#       Menü-Nummern und get für Menü-Nummer hinzugefügt
+#       Menüeinträge und Abfrage dieser per get implementiert
+#       Kommentare geändert, Stil weitestgehend vereinheitlicht
 #
 # ---- !! WARNING !! ----
 # This module could destroy your heating if something goes extremely wrong!
@@ -30,8 +31,8 @@ use Time::HiRes qw(gettimeofday);
 use Encode qw(decode encode);
 
 #
-# list of Readings / values that can explicitely be requested
-# from the WP with the GET command
+# List of readings / values that can explicitely be requested
+# from the heat pump with the FHEM-Get command
 my %WKRCD4_gets = (
     "Hz-KlSteilheit" => "Hz-KlSteilheit",
     "Hz-Temp-BasisSoll" => "Hz-Temp-BasisSoll",
@@ -52,7 +53,7 @@ my %WKRCD4_gets = (
     # "Schluesselnummer" => "Schluesselnummer",
 );
 
-# list of Readings / values that can be written to the WP
+# List of readings / values that can be written to the heat pump
 my %WKRCD4_sets = (
     "Hz-KlSteilheit" => "Hz-KlSteilheit",
     "Hz-Temp-BasisSoll" => "Hz-Temp-BasisSoll",
@@ -83,6 +84,9 @@ my %WKRCD4_sets = (
 # Some readings (marked with comment) might not be correct.
 # DO NOT SET THEM UNLESS YOU KNOW WHAT YOU ARE DOING!
 # ---- END OF WARNING ----
+#
+# Values with a * at the end of the menu-value are hidden on the
+# control unit by defaults
 #
 my %frameReadings = (
  'Temp-Aussen'              => { addr => 0x000, bytes => 0x004, menu => '0.00', fmat => '%0.1f', unp => 'f<' },
@@ -209,7 +213,7 @@ my %frameReadings = (
 );
 
 #
-# FHEM module intitialisation
+# FHEM module initialize
 # defines the functions to be called from FHEM
 #########################################################################
 sub WKRCD4_Initialize($)
@@ -230,31 +234,31 @@ sub WKRCD4_Initialize($)
 
 #
 # Define command
-# init internal values, open device,
-# set internal timer to send read command / wakeup
+# Init internal values, open device,
+# set internal timer to send read command / wakeup.
 #########################################################################                                   #
 sub WKRCD4_Define($$)
 {
-    my ( $hash, $def ) = @_;
-    my @a = split( "[ \t][ \t]*", $def );
+    my ($hash, $def) = @_;
+    my @a = split("[ \t][ \t]*", $def);
 
     return "wrong syntax: define <name> WKRCD4 [devicename\@speed|none] [interval]"
-      if ( @a < 3 );
+      if (@a < 3);
 
     DevIo_CloseDev($hash);
     my $name = $a[0];
     my $dev  = $a[2];
     my $interval  = 60;
 
-    if ( $dev eq "none" ) {
-        Log3 undef, 1, "$name: device is none, commands will be echoed only";
+    if ($dev eq "none") {
+        Log3 undef, 1, "$name: Device is none, commands will be echoed only.";
         return undef;
     }
 
     if(int(@a) == 4) {
         $interval= $a[3];
         if ($interval < 20) {
-            return "interval too small, please use something > 20, default is 60";
+            return "Error: Interval too small, please use something > 20, default is 60.";
         }
     }
 
@@ -267,21 +271,21 @@ sub WKRCD4_Define($$)
     $hash->{SerialGoodReads}    = 0;
     $hash->{SerialBadReads}     = 0;
 
-    # send wakeup string (read 2 values preceeded with AT)
+    # Send wakeup string (read 2 values preceeded with AT)
     $hash->{LastRequestAdr}     = 0;
     $hash->{LastRequestLen}     = 4;
     $hash->{LastRequest}        = gettimeofday();
     my $ret = DevIo_OpenDev( $hash, 0, "WKRCD4_Wakeup" );
 
-    # initial read after 3 secs, there timer is set to interval for update and wakeup
+    # Initial read after 3 secs, there timer is set to interval for update and wakeup
     InternalTimer(gettimeofday()+3, "WKRCD4_GetUpdate", $hash, 0);
 
     return $ret;
 }
 
 #
-# undefine command when device is deleted
-#########################################################################
+# Undefine command, called when the device is deleted
+#########################################################
 sub WKRCD4_Undef($$)
 {
     my ( $hash, $arg ) = @_;
@@ -290,10 +294,9 @@ sub WKRCD4_Undef($$)
     return undef;
 }
 
-
 #
 # Encode the data to be sent to the device (0x10 gets doubled)
-#########################################################################
+#################################################################
 sub Encode10 (@) {
     my @a = ();
     for my $byte (@_) {
@@ -304,8 +307,8 @@ sub Encode10 (@) {
 }
 
 #
-# create a command for the WP as byte array
-#########################################################################
+# Create a command for the heat pump as byte array
+######################################################
 sub WPCMD($$$$;@)
 {
     my ($hash, $cmd, $addr, $len, @value ) = @_;
@@ -317,7 +320,7 @@ sub WPCMD($$$$;@)
     } elsif ($cmd eq "write") {
         @frame = (0x01, 0x13, Encode10($addr>>8, $addr%256), Encode10(@value));
     } else {
-        Log3 $name, 3, "$name: undefined cmd ($cmd) in WPCMD";
+        Log3 $name, 3, "$name: Undefined command ($cmd) in WPCMD";
         return 0;
     }
     my $crc = CRC16(@frame);
@@ -325,8 +328,8 @@ sub WPCMD($$$$;@)
 }
 
 #
-# GET command
-#########################################################################
+# FHEM-Get command
+######################
 sub WKRCD4_Get($@)
 {
     my ( $hash, @a ) = @_;
@@ -335,29 +338,29 @@ sub WKRCD4_Get($@)
     my $name = shift @a;
     my $attr = shift @a;
     my $arg = join("", @a);
+    my $searchWord = "menuEntry";
 
-    if(!$WKRCD4_gets{$attr}) {
+    if((!$WKRCD4_gets{$attr}) && substr($attr, 0, length($searchWord)) ne $searchWord) {
         my @cList = keys %WKRCD4_gets;
-        my @rList = keys %frameReadings;
 
         return "Unknown argument $attr, choose one of " . join(" ", @cList) . " menuEntry menuEntryHidden";
     }
 
     my $properties;
 
-    # get Hash pointer for the attribute requested from the global hash
     if($attr eq "menuEntry" || $attr eq "menuEntryHidden")
     {
-        # Get properties (including menuEntry stuff)
+      # User wants to get the menu entry or check whether it's hidden or not
         $properties = $frameReadings{$arg};
 
         if(!$properties) {
-            return "No Entry in frameReadings found for $attr";
+            return "No Entry in frameReadings found for \"$arg\"";
         }
 
         my $menuEntry = substr($properties->{menu}, 0, 4);
         my $menuEntryHiddenRaw = substr($properties->{menu}, -1);
 
+        # An asterisk means that it's hidden by default
         my $menuEntryHidden = $menuEntryHiddenRaw eq "*";
 
         if($attr eq "menuEntry")
@@ -366,41 +369,41 @@ sub WKRCD4_Get($@)
         }
         else
         {
-            return $menuEntryHidden;
+            return $menuEntryHidden ? 1 : 0;
         }
     }
     else
     {
+      # Get hash pointer for the attribute requested from the global hash
         $properties = $frameReadings{$WKRCD4_gets{$attr}};
         if(!$properties) {
-            return "No Entry in frameReadings found for $attr";
+            return "No entry in frameReadings found for $attr";
         }
     }
 
-
-    # get details about the attribute requested from its hash
+    # Get details about the attribute requested from its hash
     my $addr  = $properties->{addr};
     my $bytes = $properties->{bytes};
-    Log3 $name, 4, sprintf ("$name: Get will read %02x bytes starting from %02x for $attr", $bytes, $addr);
+    Log3 $name, 4, sprintf ("$name: Get - Reading %02x bytes starting from %02x for $attr", $bytes, $addr);
 
-    # create command for WP
+    # Create command for heat pump
     my $cmd = pack('C*', WPCMD($hash, 'read', $addr, $bytes));
 
-    # set internal variables to track what is happending
+    # Set internal variables to track what is happending
     $hash->{LastRequestAdr} = $addr;
     $hash->{LastRequestLen} = $bytes;
     $hash->{LastRequest}    = gettimeofday();
     $hash->{SerialRequests}++;
 
-    Log3 $name, 4, "$name: Get -> Call DevIo_SimpleWrite: " . unpack ('H*', $cmd);
+    Log3 $name, 4, "$name: Get - Called DevIo_SimpleWrite: " . unpack ('H*', $cmd);
     DevIo_SimpleWrite( $hash, $cmd , 0 );
 
-    return sprintf ("Read %02x bytes starting from %02x", $bytes, $addr);
+    return sprintf ("Reading %02x bytes starting from %02x", $bytes, $addr);
 }
 
 #
-# SET command
-#########################################################################
+# FHEM-Set command
+######################
 sub WKRCD4_Set($@)
 {
     my ( $hash, @a ) = @_;
@@ -430,60 +433,58 @@ sub WKRCD4_Set($@)
         return "Unknown argument $attr, choose one of " . $finalReturn;
     }
 
-    # get Hash pointer for the attribute requested from the global hash
+    # Get hash pointer for the attribute requested from the global hash
     my $properties = $frameReadings{$WKRCD4_sets{$attr}};
     if(!$properties) {
-        return "No Entry in frameReadings found for $attr";
+        return "Error: No entry in frameReadings found for $attr";
     }
 
-    # get details about the attribute requested from its hash
+    # Get details about the attribute requested from its hash
     my $addr  = $properties->{addr};
     my $bytes = $properties->{bytes};
     my $min   = $properties->{min};
     my $max   = $properties->{max};
     my $unp   = $properties->{unp};
 
-    return "a numerical value between $min and $max is expected, got $arg instead"
+    return "Error: A numerical value between $min and $max is expected, got $arg instead."
         if($arg !~ m/^[\d.]+$/ || $arg < $min || $arg > $max);
 
-    # convert string to value needed for command
+    # Convert string to value needed for command
     my $vp    = pack($unp, $arg);
     my @value = unpack ('C*', $vp);
 
-    Log3 $name, 4, sprintf ("$name: Set will write $attr: %02x bytes starting from %02x with %s (%s) packed with $unp", $bytes, $addr, unpack ('H*', $vp), unpack ($unp, $vp));
+    Log3 $name, 4, sprintf ("$name: Set - Will write $attr: %02x bytes starting from %02x with %s (%s) packed with $unp", $bytes, $addr, unpack ('H*', $vp), unpack ($unp, $vp));
     my $cmd = pack('C*', WPCMD($hash, 'write', $addr, $bytes, @value));
 
-    # set internal variables to track what is happending
+    # Set internal variables to track the situation
     $hash->{LastRequestAdr} = $addr;
     $hash->{LastRequestLen} = $bytes;
     $hash->{LastRequest}    = gettimeofday();
     $hash->{SerialRequests}++;
-    Log3 $name, 4, "Set -> Call DevIo_SimpleWrite: " . unpack ('H*', $cmd);
+    Log3 $name, 4, "Set - Called DevIo_SimpleWrite: " . unpack ('H*', $cmd);
     DevIo_SimpleWrite( $hash, $cmd , 0 );
 
     return sprintf ("Wrote %02x bytes starting from %02x with %s (%s)", $bytes, $addr, unpack ('H*', $vp), unpack ($unp, $vp));
 }
 
-
-
 #########################################################################
-# called from the global loop, when the select for hash->{FD} reports data
+# Called from the global loop, when the select for hash->{FD} reports data
 sub WKRCD4_Read($)
 {
     my ($hash) = @_;
     my $name = $hash->{NAME};
 
-    # read from serial device
+    # Read from serial device
     my $buf = DevIo_SimpleRead($hash);
     return "" if ( !defined($buf) );
 
     $hash->{buffer} .= $buf;
-    Log3 $name, 5, "$name: read buffer content: " . unpack ('H*', $hash->{buffer});
+    Log3 $name, 5, "$name: Read - Buffer content: " . unpack ('H*', $hash->{buffer});
 
-    # did we already get a full frame?
+    # Do we have a full frame already?
     if ( $hash->{buffer} !~ /\x16\x10\x02(.{2})(.*)\x10\x03(.{2})(.*)/s )
     {
-        Log3 $name, 5, "$name: read NoMatch: " . unpack ('H*', $hash->{buffer});
+        Log3 $name, 5, "$name: Read - No match: " . unpack ('H*', $hash->{buffer});
         return "";
     }
     my $msg    = unpack ('H*', $1);
@@ -492,44 +493,45 @@ sub WKRCD4_Read($)
     my $rest   = $4;
 
     $hash->{buffer} = $rest;
-    Log3 $name, 4, "$name: read match msg: $msg CRC $crc";
-    Log3 $name, 5, "$name: read frame is " . unpack ('H*', pack ('C*', @aframe)) . ", Rest " . unpack ('H*', $rest);
+    Log3 $name, 4, "$name: Read - Match: $msg CRC $crc";
+    Log3 $name, 5, "$name: Read - Frame is " . unpack ('H*', pack ('C*', @aframe)) . ", Rest " . unpack ('H*', $rest);
 
-    # calculate CRC and compare with CRC from read
+    # Calculate CRC and compare with CRC from read
     my $crc2 = CRC16(@aframe);
     if ($crc != $crc2) {
-        Log3 $name, 3, "$name: read Bad CRC from WP: $crc, berechnet: $crc2";
-        Log3 $name, 4, "$name: read Frame was " . unpack ('H*', pack ('C*', @aframe));
+        Log3 $name, 3, "$name: Read - CRC invalid (got $crc, calculated $crc2)";
+        Log3 $name, 4, "$name: Read - Frame was " . unpack ('H*', pack ('C*', @aframe));
         $hash->{SerialBadReads} ++;
         @aframe = ();
         return "";
     };
-    Log3 $name, 4, "$name: read CRC Ok.";
+
+    Log3 $name, 4, "$name: Read - CRC valid.";
     $hash->{SerialGoodReads}++;
 
-    # reply to read request ?
+    # Reply to read request?
     if ($msg eq "0017") {
         my @data;
-        for(my $i=0,my $offset=2;$offset<=$#aframe;$offset++,$i++)
+        for(my $i=0, my $offset=2; $offset <= $#aframe; $offset++, $i++)
         {
-            # remove duplicate 0x10 (frames are encoded like this)
-            if (($aframe[$offset]==16)&&($aframe[$offset+1]==16)) { $offset++; }
+            # Remove duplicate 0x10 (frames are encoded that way)
+            if (($aframe[$offset] == 16) && ($aframe[$offset + 1] == 16)) { $offset++; }
             $data[$i] = $aframe[$offset];
         }
-        Log3 $name, 4, "$name: read -> Parse with relative request start " . $hash->{LastRequestAdr} . " Len " . $hash->{LastRequestLen};
-        # extract values from data
+        Log3 $name, 4, "$name: Read - Parse with relative request started (Address: " . $hash->{LastRequestAdr} . ", length: " . $hash->{LastRequestLen} . ")";
+        # Extract values from data
         parseReadings($hash, @data);
     } elsif ($msg eq "0011") {
-        # reply to write
+        # Reply to write
     } else {
-        Log3 $name, 3, "$name: read got unknown Msg type " . $msg . " in " . $hash->{buffer};
+        Log3 $name, 3, "$name: Read - Got unknown message type " . $msg . " in " . $hash->{buffer};
     }
     @aframe = ();
     return "";
 }
 
 #
-# copied from other FHEM modules
+# Copied from other FHEM modules
 #########################################################################
 sub WKRCD4_Ready($)
 {
@@ -538,15 +540,15 @@ sub WKRCD4_Ready($)
     return DevIo_OpenDev( $hash, 1, undef )
       if ( $hash->{STATE} eq "disconnected" );
 
-    # This is relevant for windows/USB only
+    # This is relevant for Windows/USB only
     my $po = $hash->{USBDev};
     my ( $BlockingFlags, $InBytes, $OutBytes, $ErrorFlags ) = $po->status;
     return ( $InBytes > 0 );
 }
 
 #
-# send wakeup /at least my waterkotte WP doesn't respond otherwise
-#########################################################################
+# Send wakeup string (Heat doesn't respond without that)
+###########################################################
 sub WKRCD4_Wakeup($)
 {
     my ($hash) = @_;
@@ -558,21 +560,23 @@ sub WKRCD4_Wakeup($)
     $hash->{LastRequestLen} = 4;
     $hash->{LastRequest}    = gettimeofday();
 
+    # Requests outside temperature too
     my $cmd = "41540D10020115000000041003FE0310020115003000041003FDC3100201150034000410037D90";
     DevIo_SimpleWrite( $hash, $cmd , 1 );
 
-    Log3 $name, 5, "$name: sent wakeup string: " . $cmd . " done.";
+    Log3 $name, 5, "$name: Sent wakeup string: " . $cmd;
     return undef;
 }
 
 #
-# request new data from WP
-###################################
+# Request new data from WP
+#############################
 sub WKRCD4_GetUpdate($)
 {
     my ($hash) = @_;
     my $name = $hash->{NAME};
 
+    # Set time for new request every {INTERVAL} seconds
     InternalTimer(gettimeofday()+$hash->{INTERVAL}, "WKRCD4_GetUpdate", $hash, 1);
     InternalTimer(gettimeofday()+$hash->{INTERVAL}/2, "WKRCD4_Wakeup", $hash, 1);
 
@@ -584,14 +588,14 @@ sub WKRCD4_GetUpdate($)
     $hash->{LastRequest}    = gettimeofday();
     DevIo_SimpleWrite( $hash, $cmd , 0 );
 
-    Log3 $name, 5, "$name: GetUpdate -> Call DevIo_SimpleWrite: " . unpack ('H*', $cmd);
+    Log3 $name, 5, "$name: GetUpdate - Called DevIo_SimpleWrite: " . unpack ('H*', $cmd);
 
     return 1;
 }
 
 #
-# calculate CRC16 for communication with the WP
-#####################################################################################################
+# Calculate CRC16 for communication with the heat pump
+#########################################################
 sub CRC16
 {
     my $CRC = 0;
@@ -608,10 +612,9 @@ sub CRC16
     return $CRC >> 8;
 }
 
-
 #
-# get Values out of data read
-#####################################################################################################
+# Get values after data read
+###############################
 sub parseReadings
 {
     my ($hash, @data) = @_;
@@ -620,35 +623,35 @@ sub parseReadings
     my $reqStart = $hash->{LastRequestAdr};
     my $reqLen   = $hash->{LastRequestLen};
 
-    # get enough bytes?
+    # Got enough bytes?
     if (@data >= $reqLen)
     {
         readingsBeginUpdate($hash);
-        # go through all possible readings from global hash
+        # Go trough all possible readings
         while (my ($reading, $property) = each(%frameReadings))
         {
             my $addr  = $property->{addr};
             my $bytes = $property->{bytes};
 
-            # is reading inside data we got?
+            # Is the reading inside the data?
             if (($addr >= $reqStart) &&
                 ($addr + $bytes <= $reqStart + $reqLen))
             {
                 my $Idx = $addr - $reqStart;
-                # get relevant slice from data array
+                # Get relevant slice from data array
                 my @slice = @data[$Idx .. $Idx + $bytes - 1];
 
-                # convert according to rules in global hash or defaults
+                # Convert according to rules in global hash or defaults
                 my $pack   = ($property->{pack}) ? $property->{pack} : 'C*';
                 my $unpack = ($property->{unp})  ? $property->{unp}  : 'H*';
                 my $fmat   = ($property->{fmat}) ? $property->{fmat} : '%s';
-                #my $value = sprintf ($fmat, unpack ($unpack, pack ($pack, @slice))) . " packed with $pack, unpacked with $unpack, (hex " . unpack ('H*', pack ('C*', @slice)) . ") format $fmat";
                 my $value = sprintf ($fmat, unpack ($unpack, pack ($pack, @slice)));
 
                 readingsBulkUpdate( $hash, $reading, $value );
-                Log3 $name, 4, "$name: parse set reading $reading to $value" if (@data <= 20);
+                Log3 $name, 4, "$name: Parse - Set $reading to $value" if (@data <= 20);
             }
         }
+
         # ----- Part disabled because it can be read manually too (stateFormat) -----
         # my $Status = "Leerlauf";
         # if (ReadingsVal($name, "Hz", 0)) {
@@ -663,7 +666,7 @@ sub parseReadings
     }
     else
     {
-        Log3 $name, 3, "$name: parse - data len smaller than requested ($reqLen) : " . unpack ('H*', pack ('C*', @data));
+        Log3 $name, 3, "$name: Parse - Date lenght smaller than requested ($reqLen) : " . unpack ('H*', pack ('C*', @data));
         return 0;
     }
 }
