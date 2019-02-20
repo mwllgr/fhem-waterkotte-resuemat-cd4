@@ -63,6 +63,7 @@ my %WKRCD4_sets = (
     "Ww-Temp-Soll" => "Ww-Temp-Soll",
     "Hz-Abschaltung" => "Hz-Abschaltung",
     "Ww-Abschaltung" => "Ww-Abschaltung",
+    "Unterdr-Warnung-Ausgang" => "Unterdr-Warnung-Ausgang",
     # ---- Values work but do not need to be changed often/normally ----
     # ---- Just remove the # if you need them ----
     # "Ww-Becken-Temp-Soll" => "Ww-Becken-Temp-Soll",
@@ -447,7 +448,13 @@ sub WKRCD4_Set($@)
     my $unp   = $properties->{unp};
 
     return "Error: A numerical value between $min and $max is expected, got $arg instead."
-        if($arg !~ m/^[\d.]+$/ || $arg < $min || $arg > $max);
+        if(($arg !~ m/^[\d.]+$/ || $arg < $min || $arg > $max) && ($unp ne "B8"));
+
+    # If it's a binary value, check for validity
+    if($unp eq "B8" && $arg !~ /\b[01]{8}\b/)
+    {
+      return "Error: Binary values have to be 8 characters long and may only contain 0 and 1.";
+    }
 
     # Convert string to value needed for command
     my $vp    = pack($unp, $arg);
