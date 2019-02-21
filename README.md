@@ -43,10 +43,10 @@ To disable the adv. mode, just delete the attribute or set it to `0`.
 ## Protocol analysis
 By sending hexadecimal strings (without the spaces) to the serial interface of the control unit you can receive a response with some hexadecimal data.  
 
-Example command:  
+Example command to **read data**:  
 `10 02 01 15 0000 0002 10 03 FE17`
 
-### Further explanation
+### Further explanation (CMD to read data)
 `10` - DLE (Data Link Escape)  
 `02` - STX (Start of Text)  
 `01 15` - CMD (Heat pump command, 01 15 means "Read memory")  
@@ -56,9 +56,22 @@ Example command:
 `03` - ETX (End of Text)  
 `FE17` - CRC-16 checksum of CMD, start address and bytes to read (More information below)
 
+Example command to **write data**:  
+`10 02 01 13 00BC 0000C841 10 03 851C`
+
+### Further explanation (CMD to write data)
+`10` - DLE (Data Link Escape)  
+`02` - STX (Start of Text)  
+`01 13` - CMD (Heat pump command, 01 13 means "Write memory")  
+`00BC` - Start address  
+`0000C841` - Bytes to write after start address (0000C841 is a float - 25.0)  
+`10` - DLE (Data Link Escape)  
+`03` - ETX (End of Text)  
+`851C` - CRC-16 checksum of CMD, start address and bytes to write (More information below)
+
 ### Available CMDs
 `01 15` - Read memory  
-`01 13` - Write memory (Check the code of the module for more information, the command is different compared to the read command! **Don't destroy your heat pump!**)
+`01 13` - Write memory (**Don't destroy your heat pump!**)
 
 ### Response
 Response for command `10 02 01 15 00E9 0001 10 03 732A` as an example:
