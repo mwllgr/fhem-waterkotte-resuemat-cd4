@@ -20,6 +20,7 @@
 #       Binäre Werte können nun auch gesetzt werden
 #       Datum/Uhrzeit-Felder können gesetzt werden (Gilt nicht für "Datum", "Uhrzeit" und "Zeit"!)
 #       Betriebs-Mode kann gesetzt werden
+#       Fortgeschrittenen-Modus via Attribut "enableAdvancedMode" implementiert
 #
 # ---- !! WARNING !! ----
 # This module could destroy your heating if something goes extremely wrong!
@@ -36,7 +37,7 @@ use Encode qw(decode encode);
 
 #
 # List of readings / values that can be written to the heat pump
-my %WKRCD4_sets = (
+my %WKRCD4_sets_default = (
     "Hz-KlSteilheit" => "Hz-KlSteilheit",
     "Hz-Temp-BasisSoll" => "Hz-Temp-BasisSoll",
     "Hz-Temp-Einsatz" => "Hz-Temp-Einsatz",
@@ -45,24 +46,61 @@ my %WKRCD4_sets = (
     "Ww-Temp-Soll" => "Ww-Temp-Soll",
     "Hz-Abschaltung" => "Hz-Abschaltung",
     "Ww-Abschaltung" => "Ww-Abschaltung",
-    "Versions-Datum" => "Versions-Datum",
-    # ---- Values work but do not need to be changed often/normally ----
-    # ---- Just remove the # if you need them ----
-    # "Ww-Becken-Temp-Soll" => "Ww-Becken-Temp-Soll",
-    # "Ww-Hysterese" => "Ww-Hysterese",
-    # "Ww-Becken-Hysterese" => "Ww-Becken-Hysterese",
-    # "Kennwort" => "Kennwort",
-    # "Modem-Klingelzeichen" => "Modem-Klingelzeichen",
-    # "Fremdzugriff" => "Fremdzugriff",
-    # "Schluesselnummer" => "Schluesselnummer",
 );
+
+my %WKRCD4_sets = %WKRCD4_sets_default;
 
 #
 # List of readings / values that can explicitely be requested
 # from the heat pump with the FHEM-Get command
 my %WKRCD4_gets = %WKRCD4_sets;
-# You can add more get commands like that:
-# $WKRCD4_gets{"Uhrzeit"} = "Uhrzeit";
+
+# You can add more gets here:
+my %WKRCD4_gets_more = (
+  "Uhrzeit" => "Uhrzeit",
+);
+
+# Merge the two get-hashes
+%WKRCD4_gets = (%WKRCD4_gets, %WKRCD4_gets_more);
+
+# Advanced set/get commands, have to be enabled first
+# Enable with:      attr DEVICE enableAdvancedMode 1
+my %WKRCD4_advanced = (
+  "Hz-Zeit-Ein" => "Hz-Zeit-Ein",
+  "Hz-Zeit-Aus" => "Hz-Zeit-Aus",
+  "Hz-Anhebung-Ein" => "Hz-Anhebung-Ein",
+  "Hz-Anhebung-Aus" => "Hz-Anhebung-Aus",
+  "Hz-Temp-RaumSoll" => "Hz-Temp-RaumSoll",
+  "Hz-Raum-Einfluss" => "Hz-Raum-Einfluss",
+  "Hz-Ext-Anhebung" => "Hz-Ext-Anhebung",
+  "Hz-Begrenzung" => "Hz-Begrenzung",
+  "Hz-Stufe2-Begrenzung" => "Hz-Stufe2-Begrenzung",
+  "Hz-Hysterese" => "Hz-Hysterese",
+  "Hz-PumpenNachl" => "Hz-PumpenNachl",
+  "Ww-Zeit-Ein" => "Ww-Zeit-Ein",
+  "Ww-Zeit-Aus" => "Ww-Zeit-Aus",
+  "Ww-Becken-Temp-Soll" => "Ww-Becken-Temp-Soll",
+  "Ww-Hysterese" => "Ww-Hysterese",
+  "Ww-Becken-Hysterese" => "Ww-Becken-Hysterese",
+  "Unterdr-Warnung-Eingang" => "Unterdr-Warnung-Eingang",
+  "Unterdr-Warnung-Ausgang" => "Unterdr-Warnung-Ausgang",
+  "Unterdr-Warnung-Sonstige" => "Unterdr-Warnung-Sonstige",
+  "Do-Handkanal" => "Do-Handkanal",
+  "Do-Handkanal-Ein" => "Do-Handkanal-Ein",
+  "Kennwort" => "Kennwort",
+  "Modem-Klingelzeichen" => "Modem-Klingelzeichen",
+  "Fremdzugriff" => "Fremdzugriff",
+  "Schluesselnummer" => "Schluesselnummer",
+  # "Hz-Ext-Freigabe" => "Hz-Ext-Freigabe",
+  # "Hz-Ext-TempRueckl-Soll" => "Hz-Ext-TempRueckl-Soll",
+  "Temp-QAus-Min" => "Temp-QAus-Min",
+  "Temp-Verdampfer-Min" => "Temp-Verdampfer-Min",
+  # "Estrich-Aufhz" => "Estrich-Aufhz",
+  # "Hz-Ext-Steuerung" => "Hz-Ext-Steuerung",
+  # "St2-bei-EvuAbsch" => "St2-bei-EvuAbsch",
+  # "Freigabe-Beckenwasser" => "Freigabe-Beckenwasser",
+  "AnalogKorrFaktor" => "AnalogKorrFaktor",
+);
 
 # Definition of the values that can be read / written
 # with the relative address, number of bytes and
@@ -218,8 +256,8 @@ sub WKRCD4_Initialize($)
     $hash->{UndefFn} = "WKRCD4_Undef";
     $hash->{SetFn}   = "WKRCD4_Set";
     $hash->{GetFn}   = "WKRCD4_Get";
-    $hash->{AttrList} =
-      "do_not_notify:1,0 " . $readingFnAttributes;
+    $hash->{AttrList} = "enableAdvancedMode:0,1 do_not_notify:1,0 " . $readingFnAttributes;
+    $hash->{AttrFn} = "WKRCD4_Attr";
 }
 
 #
@@ -669,6 +707,53 @@ sub WKRCD4_GetUpdate($)
     Log3 $name, 5, "$name: GetUpdate - Called DevIo_SimpleWrite: " . unpack ('H*', $cmd);
 
     return 1;
+}
+
+#
+# Executed when an attribute is set
+########################################
+sub WKRCD4_Attr($$$$)
+{
+	my ( $cmd, $name, $attrName, $attrValue ) = @_;
+  my $restoreOldSets = 0;
+
+	if ($cmd eq "set") {
+    # Advanced mode: Enables the advanced readings
+		if ($attrName eq "enableAdvancedMode") {
+			if($attrValue == 1)
+      {
+        # Merge the hashes
+        %WKRCD4_sets = (%WKRCD4_sets, %WKRCD4_advanced);
+        %WKRCD4_gets = %WKRCD4_sets;
+        # Don't forget to merge the user's gets
+        %WKRCD4_gets = (%WKRCD4_gets, %WKRCD4_gets_more);
+      }
+      elsif($attrValue == 0)
+      {
+        $restoreOldSets = 1;
+      }
+      else
+      {
+        return "Error: Valid values are 0 and 1.";
+      }
+		}
+	}
+  else
+  {
+    if ($attrName eq "enableAdvancedMode") {
+      $restoreOldSets = 1;
+    }
+  }
+
+  if($restoreOldSets)
+  {
+    # Restore old sets and gets
+    %WKRCD4_sets = %WKRCD4_sets_default;
+    %WKRCD4_gets = %WKRCD4_sets;
+    %WKRCD4_gets = (%WKRCD4_gets, %WKRCD4_gets_more);
+  }
+
+	return undef;
 }
 
 #
