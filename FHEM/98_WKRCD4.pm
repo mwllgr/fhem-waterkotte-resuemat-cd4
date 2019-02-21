@@ -476,7 +476,7 @@ sub WKRCD4_Set($@)
     my $unp   = $properties->{unp};
 
     return "Error: A numerical value between $min and $max is expected, got $arg instead."
-        if(($arg !~ m/^[\d.]+$/ || $arg < $min || $arg > $max) && ($unp ne "B8" && $unp ne "CCC"));
+        if(($arg !~ m/^-?[\d.]+$/ || $arg < $min || $arg > $max) && ($unp ne "B8" && $unp ne "CCC"));
 
     my $vp;
     my @value;
