@@ -32,6 +32,13 @@ Just use another Raspberry Pi and use _ser2net_ to transfer the serial data over
 Example command:  
 `define Heating WKRCD4 /dev/ttyUSB0@9600 60`  
 
+### Enabling advanced mode
+Most sets/gets are hidden by default because they usually don't have to be changed that often.
+You can enable them by setting the attribute `enableAdvancedMode` to `1`.
+`attr <name> enableAdvancedMode 1`
+
+To disable the adv. mode, just delete the attribute or set it to `0`.
+
 ## Protocol analysis
 By sending hexadecimal strings (without the spaces) to the serial interface of the control unit you can receive a response with some hexadecimal data.  
 
@@ -124,16 +131,8 @@ It's basically like a normal define, just change the device to `IP:PORT`. (The p
   * Ww-Temp-Soll
   * Hz-Abschaltung
   * Ww-Abschaltung
-  * (-) Ww-Becken-Temp-Soll
-  * (-) Ww-Hysterese
-  * (-) Ww-Becken-Hysterese
-  * (-) Kennwort
-  * (-) Modem-Klingelzeit
-  * (-) Fremdzugriff
-  * (-) Schluesselnummer
-  * ... more available but not added to set list or not tested - **be careful!**
-
-Values with a `(-)` in front of them are commented out by default and can be enabled by removing the precending `#` in the code of the module.
+  * 
+  * ... more available but disabled by default. (`attr <name> enableAdvancedMode 1`) - **Be careful!**
 
 ## List of readings
   * AnalogKorrFaktor
