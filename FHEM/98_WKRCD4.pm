@@ -18,7 +18,7 @@
 #       Menüeinträge und Abfrage dieser per get implementiert
 #       Kommentare geändert, Stil weitestgehend vereinheitlicht
 #       Binäre Werte können nun auch gesetzt werden
-#       Datum/Uhrzeit-Felder können gesetzt werden (Achtung: Nicht mit normalem Datum/Uhrzeit-Feld probieren!!)
+#       Datum/Uhrzeit-Felder können gesetzt werden (Gilt nicht für "Datum", "Uhrzeit" und "Zeit"!)
 #       Betriebs-Mode kann gesetzt werden
 #
 # ---- !! WARNING !! ----
@@ -476,19 +476,33 @@ sub WKRCD4_Set($@)
       # Is it a time?
       if($arg =~ /(0[0-9]|1[0-9]|2[0-4]):[0-5][0-9]:[0-5][0-9]/ && $fmat eq '%3$02d:%2$02d:%1$02d')
       {
-        $splitter = ':';
-        @splitted = split($splitter, $arg);
-        # Reverse the array: Time stored as SS:MM:HH
-        @splitted = reverse @splitted;
+        if($addr != 0x034)
+        {
+          $splitter = ':';
+          @splitted = split($splitter, $arg);
+          # Reverse the array: Time stored as SS:MM:HH
+          @splitted = reverse @splitted;
+        }
+        else
+        {
+          return "Error: Setting the actual time/date values is not supported.";
+        }
       }
       # Is it a date?
       elsif($arg =~ /(3[01]|[12][0-9]|0[1-9])\.(1[012]|0[1-9])\.(\d{2})/ && $fmat eq '%02d.%02d.%02d')
       {
-        $splitter = '\.';
-        @splitted = split($splitter, $arg);
+        if($addr != 0x037 && $addr != 0x034)
+        {
+          $splitter = '\.';
+          @splitted = split($splitter, $arg);
+        }
+        else
+        {
+          return "Error: Setting the actual time/date values is not supported.";
+        }
       }
       # Is it a Betriebs-Mode-change?
-      elsif($arg =~ /[1-5]\.[1-5]\.[12]/ && $attr eq "Betriebs-Mode")
+      elsif($arg =~ /[1-5]\.[1-5]\.[12]/ && $addr == 0x0FD)
       {
         $splitter = '\.';
         @splitted = split($splitter, $arg);
