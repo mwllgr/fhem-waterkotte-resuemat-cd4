@@ -34,7 +34,8 @@ Example command:
 
 ### Enabling advanced mode
 Most sets/gets are hidden by default because they usually don't have to be changed that often.
-You can enable them by setting the attribute `enableAdvancedMode` to `1`.
+You can enable them by setting the attribute `enableAdvancedMode` to `1`.  
+
 `attr <name> enableAdvancedMode 1`
 
 To disable the adv. mode, just delete the attribute or set it to `0`.
@@ -131,7 +132,8 @@ It's basically like a normal define, just change the device to `IP:PORT`. (The p
   * Ww-Temp-Soll
   * Hz-Abschaltung
   * Ww-Abschaltung
-  * 
+  * menuEntry (menu entry of a reading on the control unit, get only)
+  * menuEntryHidden (1 if hidden by default, 0 if not, get only)
   * ... more available but disabled by default. (`attr <name> enableAdvancedMode 1`) - **Be careful!**
 
 ## List of readings
