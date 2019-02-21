@@ -57,7 +57,7 @@ my %WKRCD4_gets = %WKRCD4_sets;
 
 # You can add more gets here:
 my %WKRCD4_gets_more = (
-  "Uhrzeit" => "Uhrzeit",
+  # "Uhrzeit" => "Uhrzeit",
 );
 
 # Merge the two get-hashes
