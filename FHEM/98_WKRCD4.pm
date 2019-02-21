@@ -31,6 +31,7 @@ package main;
 use strict;
 use warnings;
 use Time::HiRes qw(gettimeofday);
+use Time::Piece;
 use Encode qw(decode encode);
 
 #
@@ -44,6 +45,7 @@ my %WKRCD4_sets = (
     "Ww-Temp-Soll" => "Ww-Temp-Soll",
     "Hz-Abschaltung" => "Hz-Abschaltung",
     "Ww-Abschaltung" => "Ww-Abschaltung",
+    "Versions-Datum" => "Versions-Datum",
     # ---- Values work but do not need to be changed often/normally ----
     # ---- Just remove the # if you need them ----
     # "Ww-Becken-Temp-Soll" => "Ww-Becken-Temp-Soll",
@@ -478,8 +480,17 @@ sub WKRCD4_Set($@)
       {
         if($addr != 0x037 && $addr != 0x034)
         {
-          $splitter = '\.';
-          @splitted = split($splitter, $arg);
+          my $calcDate = Time::Piece->strptime($arg,"%d.%m.%y")->strftime("%d.%m.%y");
+
+          if($calcDate eq $arg)
+          {
+            $splitter = '\.';
+            @splitted = split($splitter, $arg);
+          }
+          else
+          {
+            return "Error: The given date is invalid.";
+          }
         }
         else
         {
