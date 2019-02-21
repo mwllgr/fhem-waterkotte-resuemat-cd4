@@ -97,11 +97,11 @@ my %frameReadings = (
  'Messbegin-Datum'          => { addr => 0x03D, bytes => 0x003, menu => '3.03', fmat => '%02d.%02d.%02d', unp => 'CCC' },
  'Hz-Messergebnis'          => { addr => 0x040, bytes => 0x004, menu => '3.04', fmat => '%0.1f', unp => 'f<' },
  'Ww-Messergenis'           => { addr => 0x044, bytes => 0x004, menu => '3.05', fmat => '%0.1f', unp => 'f<' },
- 'Mess-Reset'               => { addr => 0x048, bytes => 0x001, menu => '3.06', unp => 'C', min => 0, max => 1 },
+ 'Mess-Reset'               => { addr => 0x048, bytes => 0x001, menu => '3.06', unp => 'C', min => 0, max => 255 },
  'KomprBeginn-Zeit'         => { addr => 0x049, bytes => 0x003, menu => '3.07*', fmat => '%3$02d:%2$02d:%1$02d', unp => 'CCC' },
  'KomprBeginn-Datum'        => { addr => 0x04C, bytes => 0x003, menu => '3.08*', fmat => '%02d.%02d.%02d', unp => 'CCC' },
  'KomprBetrStunden'         => { addr => 0x04F, bytes => 0x004, menu => '3.09*', fmat => '%0.1f', unp => 'f<' },
- 'Kompr-Mess-Reset'         => { addr => 0x053, bytes => 0x001, menu => '3.10*', unp => 'C', min => 0, max => 1 },
+ 'Kompr-Mess-Reset'         => { addr => 0x053, bytes => 0x001, menu => '3.10*', unp => 'C', min => 0, max => 255 },
  'Unterbrechungen'          => { addr => 0x054, bytes => 0x001, menu => '4.00*', unp => 'B8' },
  'Warnung-Eingang'          => { addr => 0x055, bytes => 0x001, menu => '4.01*', unp => 'B8' },
  'Warnung-Ausgang'          => { addr => 0x056, bytes => 0x001, menu => '4.02*', unp => 'B8' },
@@ -131,7 +131,7 @@ my %frameReadings = (
  'Ausfall-RaumAusfall'      => { addr => 0x08C, bytes => 0x001, menu => '5.15', unp => 'B8' },
  'Ausfall-RaumKurzsch'      => { addr => 0x08D, bytes => 0x001, menu => '5.16', unp => 'B8' },
  'Ausfall-Temp-Raum'        => { addr => 0x08E, bytes => 0x004, menu => '5.17', fmat => '%0.1f', unp => 'f<' },
- 'Ausfall-Reset'            => { addr => 0x092, bytes => 0x001, menu => '5.18', unp => 'C', min => 0, max => 1 },
+ 'Ausfall-Reset'            => { addr => 0x092, bytes => 0x001, menu => '5.18', unp => 'C', min => 0, max => 255 },
  'Kennwort'                 => { addr => 0x093, bytes => 0x001, menu => '6.00', unp => 'C', min => 0, max => 255 },
  'Betriebszustaende'        => { addr => 0x096, bytes => 0x001, menu => '8.00*', unp => 'B8' },
  'Do-Buffer'                => { addr => 0x097, bytes => 0x001, menu => '8.01*', unp => 'B8' },
@@ -196,7 +196,7 @@ my %frameReadings = (
  'Do-Handkanal-Ein'         => { addr => 0x115, bytes => 0x001, menu => '7.01*', unp => 'C', min => 0, max => 1 },
  'AnalogKorrFaktor'         => { addr => 0x116, bytes => 0x004, menu => '9.04*', fmat => '%0.4f', unp => 'f<', min => 0.8000, max => 1.2000 },
  # Disabled because unsure if readings are correct:
- # 'Neu-Start'               => { addr => 0x120, bytes => 0x001, menu => '9.06*', unp => 'C', min => 0, max => 1 },
+ # 'Neu-Start'               => { addr => 0x120, bytes => 0x001, menu => '9.06*', unp => 'C', min => 0, max => 255 },
  # 'Run-Flag'                => { addr => 0x121, bytes => 0x001, menu => '9.07*', unp => 'C', min => 0, max => 1 },
 );
 
