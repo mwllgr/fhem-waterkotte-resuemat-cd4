@@ -34,28 +34,6 @@ use Time::HiRes qw(gettimeofday);
 use Encode qw(decode encode);
 
 #
-# List of readings / values that can explicitely be requested
-# from the heat pump with the FHEM-Get command
-my %WKRCD4_gets = (
-    "Hz-KlSteilheit" => "Hz-KlSteilheit",
-    "Hz-Temp-BasisSoll" => "Hz-Temp-BasisSoll",
-    "Hz-Temp-Einsatz" => "Hz-Temp-Einsatz",
-    "Hz-Temp-RaumSoll" => "Hz-Temp-RaumSoll",
-    "Hz-SchnellAufhz" => "Hz-SchnellAufhz",
-    "Ww-Temp-Soll" => "Ww-Temp-Soll",
-    "Hz-Abschaltung" => "Hz-Abschaltung",
-    "Ww-Abschaltung" => "Ww-Abschaltung",
-    # ---- Values work but do not need to be changed often/normally ----
-    # ---- Just remove the # if you need them ----
-    # "Ww-Becken-Temp-Soll" => "Ww-Becken-Temp-Soll",
-    # "Ww-Hysterese" => "Ww-Hysterese",
-    # "Ww-Becken-Hysterese" => "Ww-Becken-Hysterese",
-    # "Kennwort" => "Kennwort",
-    # "Modem-Klingelzeichen" => "Modem-Klingelzeichen",
-    # "Fremdzugriff" => "Fremdzugriff",
-    # "Schluesselnummer" => "Schluesselnummer",
-);
-
 # List of readings / values that can be written to the heat pump
 my %WKRCD4_sets = (
     "Hz-KlSteilheit" => "Hz-KlSteilheit",
@@ -76,6 +54,13 @@ my %WKRCD4_sets = (
     # "Fremdzugriff" => "Fremdzugriff",
     # "Schluesselnummer" => "Schluesselnummer",
 );
+
+#
+# List of readings / values that can explicitely be requested
+# from the heat pump with the FHEM-Get command
+my %WKRCD4_gets = %WKRCD4_sets;
+# You can add more get commands like that:
+# $WKRCD4_gets{"Uhrzeit"} = "Uhrzeit";
 
 # Definition of the values that can be read / written
 # with the relative address, number of bytes and
