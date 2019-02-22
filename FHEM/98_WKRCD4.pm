@@ -21,7 +21,8 @@
 #       Datum/Uhrzeit-Felder können gesetzt werden (Gilt nicht für "Datum", "Uhrzeit" und "Zeit"!)
 #       Betriebs-Mode kann gesetzt werden
 #       Fortgeschrittenen-Modus via Attribut "enableAdvancedMode" implementiert
-#	Uhrzeit-/Datum kann jetzt mit FHEM-Server synchronisiert werden
+#       Uhrzeit-/Datum kann jetzt mit FHEM-Server synchronisiert werden
+#       "Lesbare" Readings für Binärfelder wie "Do-Buffer" etc. hinzugefügt
 #
 # ---- !! WARNING !! ----
 # This module could destroy your heating if something goes extremely wrong!
@@ -101,6 +102,27 @@ my %WKRCD4_advanced = (
   # "St2-bei-EvuAbsch" => "St2-bei-EvuAbsch",
   # "Freigabe-Beckenwasser" => "Freigabe-Beckenwasser",
   "AnalogKorrFaktor" => "AnalogKorrFaktor",
+);
+
+# Binary value-arrays as hash
+my %WKRCD4_BinaryValues = (
+  "Mode-Heizung" => ["UnterbrFuehlerfehler", "KeinBedarf", "Unterdrueckt", "Zeitprog", "", "SchnellAufhz", "", "Normal"],
+  "Mode-Wasser" => ["", "", "", "", "", "KeinBedarf", "Zeitprog", "Normal"],
+  "Betriebszustaende" => ["", "", "?", "", "", "St2-Betrieb", "Hz-Betrieb", "Ww-Betrieb"],
+
+  "Do-Buffer" => ["Pumpe-Quelle", "Pumpe-Ww", "Pumpe-Hz", "St2", "Kurbelwannenhz", "Alarm", "Kompr-1", "Magnetventil"],
+  "Di-Buffer" => ["Ext-Abschaltung", "Ext-Sollwertbeeinflussung", "", "Sole-Minimum",
+                  "Pumpe-Quelle", "HD-Pressostat", "ND-Pressostat", "Oeldruck-Pressostat"],
+
+  "Warnung-Eingang" => ["", "", "", "",
+                        "Diff. QAus-Verdampf zu hoch", "Diff. QEin-QAus zu hoch",
+                        "Temp. QAus zu niedrig", "Verdampfungstemp. zu niedrig"],
+
+  "Warnung-Ausgang" => ["", "", "Diff. Kondensation-Vorlauf zu hoch", "", "Diff. HzgVorlauf-Ruecklauf zu hoch",
+                        "Diff. HzgVorlauf-Ruecklauf zu niedrig", "Kondensationstemp. zu hoch", ""],
+
+  "Warnung-Sonstige" => ["", "", "", "Solestand Minimum", "Do-Buffer in Handstellung",
+                        "Außenfuehler defekt", "Hz-Vorlauffuehler defekt", "Hz-Ruecklauffuehler defekt"],
 );
 
 # Definition of the values that can be read / written
@@ -454,7 +476,7 @@ sub WKRCD4_Set($@)
             my $current = $frameReadings{$val};
             $finalReturn .= $val;
 
-            if($current->{min} == 0 && $current->{max} == 1 && ($current->{unp} eq "C" || $current->{unp} eq "n"))
+            if(!$current->{min} && $current->{max} && ($current->{unp} eq "C" || $current->{unp} eq "n"))
             {
               # Bool value, only 0 and 1 for set available
                 $finalReturn .= ":0,1"
@@ -848,23 +870,53 @@ sub parseReadings
             }
         }
 
-        # ----- Part disabled because it can be read manually too (stateFormat) -----
-        # my $Status = "Leerlauf";
-        # if (ReadingsVal($name, "Hz", 0)) {
-        #     $Status = sprintf ("Heizung %s", ReadingsVal ($name, "Temp-Vorlauf", 0));
-        # } elsif (ReadingsVal($name, "Ww", 0)) {
-        #     $Status = sprintf ("Warmwasser %s", ReadingsVal ($name, "Ww-Temp", 0));
-        # }
-        # $Status = encode ("utf8", $Status);
-        # readingsBulkUpdate( $hash, "Status", $Status);
-        # ----- Disabled part END -----
+        # Set the binary reading-messages to "Msg-*" fields
+        setBinaryReadings($hash);
         readingsEndUpdate( $hash, 1 );
     }
     else
     {
-        Log3 $name, 3, "$name: Parse - Date lenght smaller than requested ($reqLen) : " . unpack ('H*', pack ('C*', @data));
+        Log3 $name, 5, "$name: Parse - Date lenght smaller than requested ($reqLen) : " . unpack ('H*', pack ('C*', @data));
         return 0;
     }
+}
+
+#
+# Creates "Msg-*" readings for binary messages
+##################################################
+sub setBinaryReadings($)
+{
+  my ($hash) = @_;
+  my $name = $hash->{NAME};
+
+  # Check for every binary value field in hash
+  foreach my $key (keys %WKRCD4_BinaryValues)
+  {
+    my $result = "";
+
+    # Go trough all messages for $key
+    for(my $i = 0; $i < scalar(@{$WKRCD4_BinaryValues{$key}}); $i++)
+    {
+      if(substr(ReadingsVal($name, $key, 0), $i, 1))
+      {
+        # Character is 1, add corresponding string
+        $result .= $WKRCD4_BinaryValues{$key}[$i] . ", ";
+      }
+    }
+
+    my $newValue = trim(substr($result, 0, -2));
+
+    # Only create reading if it's not 00000000
+    if($newValue ne "")
+    {
+      readingsBulkUpdate($hash, "Msg-" . $key, $newValue);
+    }
+    else
+    {
+      # Delete reading if it's completely empty
+      readingsDelete($hash, "Msg-" . $key)
+    }
+  }
 }
 
 1;
