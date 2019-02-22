@@ -158,6 +158,7 @@ It's basically like a normal define, just change the device to `IP:PORT`. (The p
   * Ww-Abschaltung
   * menuEntry (menu entry of a reading on the control unit, get only)
   * menuEntryHidden (1 if hidden by default, 0 if not, get only)
+  * dateTimeSync (set only)
   * ... more available but disabled by default. (`attr <name> enableAdvancedMode 1`) - **Be careful!**
 
 ## List of readings
