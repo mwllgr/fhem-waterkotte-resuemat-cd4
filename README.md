@@ -60,18 +60,29 @@ Example command to **write data**:
 `10 02 01 13 00BC 0000C841 10 03 851C`
 
 ### Further explanation (CMD to write data)
-`10` - DLE (Data Link Escape)  
-`02` - STX (Start of Text)  
+`10 02` - DLE / STX  
 `01 13` - CMD (Heat pump command, 01 13 means "Write memory")  
 `00BC` - Start address  
 `0000C841` - Bytes to write after start address (0000C841 is a float - 25.0)  
-`10` - DLE (Data Link Escape)  
-`03` - ETX (End of Text)  
+`10 03` - DLE / ETX  
 `851C` - CRC-16 checksum of CMD, start address and bytes to write (More information below)
+
+Example command to **sync the time/date**:  
+`10 02 01 14 0000 1B 1E 0C 16 02 13 1003 AF8D`
+
+### Further explanation (CMD to sync time/date)
+`10 02` - DLE / STX  
+`01 14` - CMD (Heat pump command, 01 13 means "Write time/date memory")  
+`0000` - Start address (?)  
+`1B 1E 0C` - SS:MM:HH (In that case: 27:30:12)
+`16 02 13` - DD.MM.YY (In that case: 22.02.19)
+`10 03` - DLE / ETX  
+`AF8D` - CRC-16 checksum of CMD, start address and time/date (More information below)
 
 ### Available CMDs
 `01 15` - Read memory  
 `01 13` - Write memory (**Don't destroy your heat pump!**)
+`01 14` - Write time/date memory (Maybe more, won't try that...)  
 
 ### Response
 Response for command `10 02 01 15 00E9 0001 10 03 732A` as an example:
