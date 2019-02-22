@@ -21,6 +21,7 @@
 #       Datum/Uhrzeit-Felder können gesetzt werden (Gilt nicht für "Datum", "Uhrzeit" und "Zeit"!)
 #       Betriebs-Mode kann gesetzt werden
 #       Fortgeschrittenen-Modus via Attribut "enableAdvancedMode" implementiert
+#	Uhrzeit-/Datum kann jetzt mit FHEM-Server synchronisiert werden
 #
 # ---- !! WARNING !! ----
 # This module could destroy your heating if something goes extremely wrong!
@@ -347,10 +348,13 @@ sub WPCMD($$$$;@)
         @frame = (0x01, 0x15, Encode10($addr>>8, $addr%256), Encode10($len>>8, $len%256));
     } elsif ($cmd eq "write") {
         @frame = (0x01, 0x13, Encode10($addr>>8, $addr%256), Encode10(@value));
+    } elsif ($cmd eq "dateTimeSync") {
+        @frame = (0x01, 0x14, 0x00, 0x00, Encode10(@value));
     } else {
         Log3 $name, 3, "$name: Undefined command ($cmd) in WPCMD";
         return 0;
     }
+
     my $crc = CRC16(@frame);
     return (0xff, 0x10, 0x02, @frame, 0x10, 0x03, $crc >> 8, $crc % 256, 0xff);
 }
@@ -441,7 +445,7 @@ sub WKRCD4_Set($@)
     my $attr = shift @a;
     my $arg = join("", @a);
 
-    if(!defined($WKRCD4_sets{$attr})) {
+    if(!defined($WKRCD4_sets{$attr}) && $attr ne "dateTimeSync") {
         my @cList = keys %WKRCD4_sets;
         my $finalReturn;
 
@@ -459,111 +463,140 @@ sub WKRCD4_Set($@)
             $finalReturn .= " ";
         }
 
-        return "Unknown argument $attr, choose one of " . $finalReturn;
+        return "Unknown argument $attr, choose one of dateTimeSync:noArg " . $finalReturn;
     }
-
-    # Get hash pointer for the attribute requested from the global hash
-    my $properties = $frameReadings{$WKRCD4_sets{$attr}};
-    if(!$properties) {
-        return "Error: No entry in frameReadings found for $attr";
-    }
-
-    # Get details about the attribute requested from its hash
-    my $addr  = $properties->{addr};
-    my $bytes = $properties->{bytes};
-    my $min   = $properties->{min};
-    my $max   = $properties->{max};
-    my $unp   = $properties->{unp};
-
-    return "Error: A numerical value between $min and $max is expected, got $arg instead."
-        if(($arg !~ m/^-?[\d.]+$/ || $arg < $min || $arg > $max) && ($unp ne "B8" && $unp ne "CCC"));
 
     my $vp;
     my @value;
     my $isSpecialValue = 0;
+    my $cmd;
+    my $addr;
+    my $bytes;
+    my $unp;
 
-    # If it's a binary value, check for validity
-    if($unp eq "B8" && $arg !~ /\b[01]{8}\b/)
-    {
-      return "Error: Binary values have to be 8 characters long and may only contain 0 and 1.";
+    # Get hash pointer for the attribute requested from the global hash
+    my $properties = $frameReadings{$WKRCD4_sets{$attr}};
+    if(!$properties) {
+      if($attr eq "dateTimeSync")
+      {
+        # User wants to sync time/date
+        my ($sec, $min, $hour, $mday, $mon, $year, $wday, $yday, $isdst) = localtime(time);
+
+        # SS:MM:HH
+        my $time = pack('C', $sec) . pack('C', $min) . pack('C', $hour);
+        # DD.MM.YY
+        my $date = pack('C', $mday) . pack('C', $mon + 1) . pack('C', sprintf("%02d", $year % 100));
+        my $result = $time . $date;
+
+        $vp = $result;
+        @value = unpack('C*', $result);
+        $cmd = pack('C*', WPCMD(undef, $attr, 0x0000, 0, @value));
+        $bytes = 0x06;
+
+        $isSpecialValue = 1;
+      }
+      else
+      {
+        return "Error: No entry in frameReadings found for $attr";
+      }
     }
 
-    # Is it a date/time or a special value?
-    elsif($unp eq "CCC" && $properties->{fmat})
+    if($attr ne "dateTimeSync")
     {
-      $isSpecialValue = 1;
+      # User does not want to sync time/date
+        # Get details about the attribute requested from its hash
+        $addr  = $properties->{addr};
+        $bytes = $properties->{bytes};
+        my $min   = $properties->{min};
+        my $max   = $properties->{max};
+        $unp   = $properties->{unp};
 
-      my $splitter;
-      my $fmat = $properties->{fmat};
-      my @splitted;
-      my $result;
+        return "Error: A numerical value between $min and $max is expected, got $arg instead."
+            if(($arg !~ m/^-?[\d.]+$/ || $arg < $min || $arg > $max) && ($unp ne "B8" && $unp ne "CCC"));
 
-      # Is it a time?
-      if($arg =~ /(0[0-9]|1[0-9]|2[0-4]):[0-5][0-9]:[0-5][0-9]/ && $fmat eq '%3$02d:%2$02d:%1$02d')
-      {
-        if($addr != 0x034)
+        # If it's a binary value, check for validity
+        if($unp eq "B8" && $arg !~ /\b[01]{8}\b/)
         {
-          $splitter = ':';
-          @splitted = split($splitter, $arg);
-          # Reverse the array: Time stored as SS:MM:HH
-          @splitted = reverse @splitted;
+          return "Error: Binary values have to be 8 characters long and may only contain 0 and 1.";
         }
-        else
-        {
-          return "Error: Setting the actual time/date values is not supported.";
-        }
-      }
-      # Is it a date?
-      elsif($arg =~ /(3[01]|[12][0-9]|0[1-9])\.(1[012]|0[1-9])\.(\d{2})/ && $fmat eq '%02d.%02d.%02d')
-      {
-        if($addr != 0x037 && $addr != 0x034)
-        {
-          my $calcDate = Time::Piece->strptime($arg,"%d.%m.%y")->strftime("%d.%m.%y");
 
-          if($calcDate eq $arg)
+        # Is it a date/time or a special value?
+        elsif($unp eq "CCC" && $properties->{fmat})
+        {
+          $isSpecialValue = 1;
+
+          my $splitter;
+          my $fmat = $properties->{fmat};
+          my @splitted;
+          my $result;
+
+          # Is it a time?
+          if($arg =~ /(0[0-9]|1[0-9]|2[0-4]):[0-5][0-9]:[0-5][0-9]/ && $fmat eq '%3$02d:%2$02d:%1$02d')
+          {
+            if($addr != 0x034)
+            {
+              $splitter = ':';
+              @splitted = split($splitter, $arg);
+              # Reverse the array: Time stored as SS:MM:HH
+              @splitted = reverse @splitted;
+            }
+            else
+            {
+              return "Error: Setting the actual time/date values is not supported.";
+            }
+          }
+          # Is it a date?
+          elsif($arg =~ /(3[01]|[12][0-9]|0[1-9])\.(1[012]|0[1-9])\.(\d{2})/ && $fmat eq '%02d.%02d.%02d')
+          {
+            if($addr != 0x037 && $addr != 0x034)
+            {
+              my $calcDate = Time::Piece->strptime($arg,"%d.%m.%y")->strftime("%d.%m.%y");
+
+              if($calcDate eq $arg)
+              {
+                $splitter = '\.';
+                @splitted = split($splitter, $arg);
+              }
+              else
+              {
+                return "Error: The given date is invalid.";
+              }
+            }
+            else
+            {
+              return "Error: Setting the actual time/date values is not supported.";
+            }
+          }
+          # Is it a Betriebs-Mode-change?
+          elsif($arg =~ /[1-5]\.[1-5]\.[12]/ && $addr == 0x0FD)
           {
             $splitter = '\.';
             @splitted = split($splitter, $arg);
           }
+          # Nope, it's nothing.
           else
           {
-            return "Error: The given date is invalid.";
+            return "Error: Field doesn't match any supported data type or input isn't valid for this operation.";
           }
+
+          foreach my $current(@splitted)
+          {
+            $result .= pack('C', $current);
+          }
+
+          $vp = $result;
+          @value = unpack('C*', $vp);
         }
         else
         {
-          return "Error: Setting the actual time/date values is not supported.";
+          # Convert string to value needed for command
+          $vp    = pack($unp, $arg);
+          @value = unpack ('C*', $vp);
         }
-      }
-      # Is it a Betriebs-Mode-change?
-      elsif($arg =~ /[1-5]\.[1-5]\.[12]/ && $addr == 0x0FD)
-      {
-        $splitter = '\.';
-        @splitted = split($splitter, $arg);
-      }
-      # Nope, it's nothing.
-      else
-      {
-        return "Error: Field doesn't match any supported data type or input isn't valid for this operation.";
-      }
 
-      foreach my $current(@splitted)
-      {
-        $result .= pack('C', $current);
-      }
-
-      $vp = $result;
-      @value = unpack('C*', $vp);
+        Log3 $name, 4, sprintf ("$name: Set - Will write $attr: %02x bytes starting from %02x with %s (%s) packed with $unp", $bytes, $addr, unpack ('H*', $vp), unpack ($unp, $vp));
+        $cmd = pack('C*', WPCMD($hash, 'write', $addr, $bytes, @value));
     }
-    else
-    {
-      # Convert string to value needed for command
-      $vp    = pack($unp, $arg);
-      @value = unpack ('C*', $vp);
-    }
-
-    Log3 $name, 4, sprintf ("$name: Set - Will write $attr: %02x bytes starting from %02x with %s (%s) packed with $unp", $bytes, $addr, unpack ('H*', $vp), unpack ($unp, $vp));
-    my $cmd = pack('C*', WPCMD($hash, 'write', $addr, $bytes, @value));
 
     # Set internal variables to track the situation
     $hash->{LastRequestAdr} = $addr;
