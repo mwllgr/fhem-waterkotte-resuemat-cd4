@@ -72,7 +72,7 @@ Example command to **sync the time/date**:
 
 ### Further explanation (CMD to sync time/date)
 `10 02` - DLE / STX  
-`01 14` - CMD (Heat pump command, 01 13 means "Write time/date memory")  
+`01 14` - CMD (Heat pump command, 01 14 means "Write time/date memory")  
 `0000` - Start address (?)  
 `1B 1E 0C` - SS:MM:HH (In that case: 27:30:12)
 `16 02 13` - DD.MM.YY (In that case: 22.02.19)
