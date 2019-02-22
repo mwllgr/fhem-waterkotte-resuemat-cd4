@@ -22,7 +22,7 @@
 #       Betriebs-Mode kann gesetzt werden
 #       Fortgeschrittenen-Modus via Attribut "enableAdvancedMode" implementiert
 #       Uhrzeit-/Datum kann jetzt mit FHEM-Server synchronisiert werden
-#       "Lesbare" Readings für Binärfelder wie "Do-Buffer" etc. hinzugefügt
+#       "Lesbare" Readings für Binärfelder wie "Do-Buffer" etc.
 #
 # ---- !! WARNING !! ----
 # This module could destroy your heating if something goes extremely wrong!
@@ -125,6 +125,10 @@ my %WKRCD4_BinaryValues = (
                         "Außenfuehler defekt", "Hz-Vorlauffuehler defekt", "Hz-Ruecklauffuehler defekt"],
 );
 
+$WKRCD4_BinaryValues{"Ausfall-Do-Buffer"} = $WKRCD4_BinaryValues{"Do-Buffer"};
+$WKRCD4_BinaryValues{"Ausfall-Di-Buffer"} = $WKRCD4_BinaryValues{"Di-Buffer"};
+$WKRCD4_BinaryValues{"Ausfall-Betriebszust"} = $WKRCD4_BinaryValues{"Betriebszustaende"};
+
 # Definition of the values that can be read / written
 # with the relative address, number of bytes and
 # fmat to be used in sprintf when formatting the value
@@ -178,7 +182,7 @@ my %frameReadings = (
  'FuehlRaum-Zaehler0'       => { addr => 0x05F, bytes => 0x002, menu => '4.10*', unp => 'n' },
  'Ausfall-Zeit'             => { addr => 0x061, bytes => 0x003, menu => '5.00', fmat => '%3$02d:%2$02d:%1$02d', unp => 'CCC' },
  'Ausfall-Datum'            => { addr => 0x064, bytes => 0x003, menu => '5.01', fmat => '%02d.%02d.%02d', unp => 'CCC' },
- 'Ausfall-BetriebMode'      => { addr => 0x067, bytes => 0x001, menu => '5.02', unp => 'B8' },
+ 'Ausfall-Betriebszust'     => { addr => 0x067, bytes => 0x001, menu => '5.02', unp => 'B8' },
  'Ausfall-Do-Buffer'        => { addr => 0x068, bytes => 0x001, menu => '5.03', unp => 'B8' },
  'Ausfall-Di-Buffer'        => { addr => 0x069, bytes => 0x001, menu => '5.04', unp => 'B8' },
  'Ausfall-FuehlAusfall'     => { addr => 0x06A, bytes => 0x001, menu => '5.05', unp => 'B8' },
@@ -900,7 +904,10 @@ sub setBinaryReadings($)
       if(substr(ReadingsVal($name, $key, 0), $i, 1))
       {
         # Character is 1, add corresponding string
-        $result .= $WKRCD4_BinaryValues{$key}[$i] . ", ";
+        if($WKRCD4_BinaryValues{$key}[$i] ne "")
+        {
+          $result .= $WKRCD4_BinaryValues{$key}[$i] . ", ";
+        }
       }
     }
 
