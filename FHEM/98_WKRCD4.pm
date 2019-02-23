@@ -480,7 +480,7 @@ sub WKRCD4_Set($@)
             my $current = $frameReadings{$val};
             $finalReturn .= $val;
 
-            if(!$current->{min} && $current->{max} == 1 && ($current->{unp} eq "C" || $current->{unp} eq "n"))
+            if(($current->{unp} eq "C" || $current->{unp} eq "n") && ($current->{min} == 0 && $current->{max} == 1))
             {
               # Bool value, only 0 and 1 for set available
                 $finalReturn .= ":0,1"
