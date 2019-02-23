@@ -106,7 +106,7 @@ my %WKRCD4_advanced = (
 
 # Binary value-arrays as hash
 my %WKRCD4_BinaryValues = (
-  "Mode-Heizung" => ["UnterbrFuehlerfehler", "KeinBedarf", "Unterdrueckt", "Zeitprog", "", "SchnellAufhz", "", "Normal"],
+  "Mode-Heizung" => ["UnterbrFuehlerfehler", "KeinBedarf", "Unterdrueckt", "Zeitprog", "", "SchnellAufhz", "ExtAnheb", "Normal"],
   "Mode-Wasser" => ["", "", "", "", "", "KeinBedarf", "Zeitprog", "Normal"],
   "Betriebszustaende" => ["", "", "?", "", "", "St2-Betrieb", "Hz-Betrieb", "Ww-Betrieb"],
 
