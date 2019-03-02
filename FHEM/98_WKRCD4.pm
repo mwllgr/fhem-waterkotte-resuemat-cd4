@@ -97,7 +97,7 @@ my %WKRCD4_advanced = (
   # "Hz-Ext-TempRueckl-Soll" => "Hz-Ext-TempRueckl-Soll",
   "Temp-QAus-Min" => "Temp-QAus-Min",
   "Temp-Verdampfer-Min" => "Temp-Verdampfer-Min",
-  # "Estrich-Aufhz" => "Estrich-Aufhz",
+  "Estrich-Aufhz" => "Estrich-Aufhz",
   # "Hz-Ext-Steuerung" => "Hz-Ext-Steuerung",
   # "St2-bei-EvuAbsch" => "St2-bei-EvuAbsch",
   # "Freigabe-Beckenwasser" => "Freigabe-Beckenwasser",
@@ -253,8 +253,8 @@ my %frameReadings = (
  # ---- End of (1)
  'Temp-QAus-Min'            => { addr => 0x108, bytes => 0x004, menu => '6.09*', fmat => '%0.1f', unp => 'f<', min => -25.0, max => 20.0 },
  'Temp-Verdampfer-Min'      => { addr => 0x10C, bytes => 0x004, menu => '6.10*', fmat => '%0.1f', unp => 'f<', min => -25.0, max => 20.0 },
- # ---- Might not be correct (2)
  'Estrich-Aufhz'            => { addr => 0x110, bytes => 0x001, menu => '6.11*', unp => 'C', min => 0, max => 1 },
+  # ---- Might not be correct (2)
  'Hz-ExtSteuerung'          => { addr => 0x111, bytes => 0x001, menu => '6.12*', unp => 'B8' },
  'St2-bei-EvuAbsch'         => { addr => 0x112, bytes => 0x001, menu => '6.13*', unp => 'C', min => 0, max => 1 },
  'Freigabe-Beckenwasser'    => { addr => 0x113, bytes => 0x001, menu => '6.14*', unp => 'C', min => 0, max => 1 },
