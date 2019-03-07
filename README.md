@@ -104,7 +104,7 @@ The bytes between `17` and `10` are the received data bytes.
 In that case, it would be `00`, because address `00E9` is the field "Ww-Abschaltung" (German for 'Warm water disabled'). At the time of the request, warm water was enabled, so the answer is `0`, not `1`.  
 `7200` is the checksum once again.
 
-Please note: If `10` appears to times in a row in the received data bytes you have to skip one byte to get correct values.
+Please note: If `10` appears to times in a row in the received data bytes you have to skip the second `10` to get correct values.
 
 ---
 
