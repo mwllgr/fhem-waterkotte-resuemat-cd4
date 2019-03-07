@@ -43,6 +43,8 @@ To disable the adv. mode, just delete the attribute or set it to `0`.
 ## Protocol analysis
 By sending hexadecimal strings (without the spaces) to the serial interface of the control unit you can receive a response with some hexadecimal data.  
 
+---
+
 Example command to **read data**:  
 `10 02 01 15 0000 0002 10 03 FE17`
 
@@ -56,6 +58,8 @@ Example command to **read data**:
 `03` - ETX (End of Text)  
 `FE17` - CRC-16 checksum of CMD, start address and bytes to read (More information below)
 
+---
+
 Example command to **write data**:  
 `10 02 01 13 00BC 0000C841 10 03 851C`
 
@@ -66,6 +70,8 @@ Example command to **write data**:
 `0000C841` - Bytes to write after start address (0000C841 is a float - 25.0)  
 `10 03` - DLE / ETX  
 `851C` - CRC-16 checksum of CMD, start address and bytes to write (More information below)
+
+---
 
 Example command to **sync the time/date**:  
 `10 02 01 14 0000 1B 1E 0C 16 02 13 1003 AF8D`
@@ -79,19 +85,28 @@ Example command to **sync the time/date**:
 `10 03` - DLE / ETX  
 `AF8D` - CRC-16 checksum of CMD, start address and time/date (More information below)
 
+---
+
 ### Available CMDs
 `01 15` - Read memory  
-`01 13` - Write memory (**Don't destroy your heat pump!**)
 `01 14` - Write time/date memory (Maybe more, won't try that...)  
+`01 13` - Write memory (**Don't destroy your heat pump!**)
 
+---
 ### Response
-Response for command `10 02 01 15 00E9 0001 10 03 732A` as an example:
+#### Read response
 
-`16 10 02 00 17 00 10 03 7200`  
+Response for command `10 02 01 15 00E9 0001 10 03 732A` as an example:  
+`16 10 02 00 17 00 10 03 7200 16`  
 
 The bytes between `17` and `10` are the received data bytes.  
 In that case, it would be `00`, because address `00E9` is the field "Ww-Abschaltung" (German for 'Warm water disabled'). At the time of the request, warm water was enabled, so the answer is `0`, not `1`.  
 `7200` is the checksum once again.
+
+---
+#### Write response
+The control unit acknowledges any write command with the following response:  
+`16 10 02 00 11 00 10 03 6600 16`
 
 ### Calculating a CRC-16
 Some people at the IP-Symcom forums already created [two PHP scripts to calculate the CRC-16](https://www.symcon.de/forum/threads/2092-ComPort-und-Waterkotte-abfragen/page2).  
