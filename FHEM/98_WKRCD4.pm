@@ -722,7 +722,7 @@ sub WKRCD4_Ready($)
 }
 
 #
-# Send wakeup string (Heat doesn't respond without that)
+# Send wakeup string (Control unit doesn't respond without that)
 ###########################################################
 sub WKRCD4_Wakeup($)
 {
@@ -735,8 +735,9 @@ sub WKRCD4_Wakeup($)
     $hash->{LastRequestLen} = 4;
     $hash->{LastRequest}    = gettimeofday();
 
-    # Requests outside temperature too
-    my $cmd = "41540D10020115000000041003FE0310020115003000041003FDC3100201150034000410037D90";
+    # my $cmd = "41540D10020115000000041003FE0310020115003000041003FDC3100201150034000410037D90";
+    
+    my $cmd = "41540D"; # AT and carriage return
     DevIo_SimpleWrite( $hash, $cmd , 1 );
 
     Log3 $name, 5, "$name: Sent wakeup string: " . $cmd;
