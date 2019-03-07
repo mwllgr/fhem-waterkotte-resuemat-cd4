@@ -93,6 +93,7 @@ Example command to **sync the time/date**:
 `01 13` - Write memory (**Don't destroy your heat pump!**)
 
 ---
+
 ### Response
 #### Read response
 
@@ -103,7 +104,10 @@ The bytes between `17` and `10` are the received data bytes.
 In that case, it would be `00`, because address `00E9` is the field "Ww-Abschaltung" (German for 'Warm water disabled'). At the time of the request, warm water was enabled, so the answer is `0`, not `1`.  
 `7200` is the checksum once again.
 
+Please note: If `10` appears to times in a row in the received data bytes you have to skip one byte to get correct values.
+
 ---
+
 #### Write response
 The control unit acknowledges any write command with the following response:  
 `16 10 02 00 11 00 10 03 6600 16`
