@@ -41,8 +41,11 @@ You can enable them by setting the attribute `enableAdvancedMode` to `1`.
 To disable the adv. mode, just delete the attribute or set it to `0`.
 
 ## Protocol analysis
-By sending hexadecimal strings (without the spaces) to the serial interface of the control unit you can receive a response with some hexadecimal data.  
+By sending hexadecimal strings (**without the spaces**) to the serial interface of the control unit you can receive a response with some hexadecimal data.  
 
+Please note: If the control unit doesn't respond, try sending "AT" and a carriage return:  
+`41 54 0D`
+ 
 ---
 
 Example command to **read data**:  
