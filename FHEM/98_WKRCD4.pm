@@ -657,7 +657,7 @@ sub WKRCD4_Read($)
     Log3 $name, 5, "$name: Read - Buffer content: " . unpack ('H*', $hash->{buffer});
 
     # Do we have a full frame already?
-    if ( $hash->{buffer} !~ /\x16\x10\x02(.{2})(.*)\x10\x03(.{2})(.*)/s )
+    if ( $hash->{buffer} !~ /\x16\x10\x02(.{2})(.*)\x10\x03(.{2})\x16(.*)/s )
     {
         Log3 $name, 5, "$name: Read - No match: " . unpack ('H*', $hash->{buffer});
         return "";
