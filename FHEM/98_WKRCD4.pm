@@ -163,7 +163,7 @@ my %frameReadings = (
  'Messbegin-Zeit'           => { addr => 0x03A, bytes => 0x003, menu => '3.02', fmat => '%3$02d:%2$02d:%1$02d', unp => 'CCC' },
  'Messbegin-Datum'          => { addr => 0x03D, bytes => 0x003, menu => '3.03', fmat => '%02d.%02d.%02d', unp => 'CCC' },
  'Hz-Messergebnis'          => { addr => 0x040, bytes => 0x004, menu => '3.04', fmat => '%0.1f', unp => 'f<' },
- 'Ww-Messergenis'           => { addr => 0x044, bytes => 0x004, menu => '3.05', fmat => '%0.1f', unp => 'f<' },
+ 'Ww-Messergebnis'          => { addr => 0x044, bytes => 0x004, menu => '3.05', fmat => '%0.1f', unp => 'f<' },
  'Mess-Reset'               => { addr => 0x048, bytes => 0x001, menu => '3.06', unp => 'C', min => 0, max => 255 },
  'KomprBeginn-Zeit'         => { addr => 0x049, bytes => 0x003, menu => '3.07*', fmat => '%3$02d:%2$02d:%1$02d', unp => 'CCC' },
  'KomprBeginn-Datum'        => { addr => 0x04C, bytes => 0x003, menu => '3.08*', fmat => '%02d.%02d.%02d', unp => 'CCC' },
