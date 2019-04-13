@@ -160,6 +160,9 @@ Save the file and close the text editor. The last step: Restart ser2net.
 `define Heating WKRCD4 192.168.1.23:2000@9600 60`  
 It's basically like a normal define, just change the device to `IP:PORT`. (The port is 2000 in our case!)
 
+## Examples
+Check out [examples.md](/examples.md) to find some snippets for attributes and notifies.
+
 ## Screenshots
 ### SVG plot: Outside temperature
 ![Plot: Outside temp](/img/scr_svg-plot_aussentemp.png "Plot: Outside temp")
