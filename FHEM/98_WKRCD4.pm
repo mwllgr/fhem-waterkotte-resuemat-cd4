@@ -482,8 +482,12 @@ sub WKRCD4_Set($@)
 
             if(($current->{unp} eq "C" || $current->{unp} eq "n") && ($current->{min} == 0 && $current->{max} == 1))
             {
-              # Bool value, only 0 and 1 for set available
+                # Bool value, only 0 and 1 for set available
                 $finalReturn .= ":0,1"
+            }
+	    else
+            {
+                $finalReturn .= ":textField";
             }
 
             $finalReturn .= " ";
