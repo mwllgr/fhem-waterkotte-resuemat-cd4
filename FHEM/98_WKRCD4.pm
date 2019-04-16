@@ -108,7 +108,7 @@ my %WKRCD4_advanced = (
 my %WKRCD4_BinaryValues = (
   "Mode-Heizung" => ["UnterbrFuehlerfehler", "KeinBedarf", "Unterdrueckt", "Zeitprog", "Sommer", "SchnellAufhz", "ExtAnheb", "Normal"],
   "Mode-Wasser" => ["", "", "", "", "", "KeinBedarf", "Zeitprog", "Normal"],
-  "Betriebszustaende" => ["", "", "?", "", "", "St2-Betrieb", "Hz-Betrieb", "Ww-Betrieb"],
+  "Betriebszustaende" => ["", "", "", "", "Warnung", "St2-Betrieb", "Hz-Betrieb", "Ww-Betrieb"],
 
   "Do-Buffer" => ["Pumpe-Quelle", "Pumpe-Ww", "Pumpe-Hz", "St2", "Kurbelwannenhz", "Alarm", "Kompr-1", "Magnetventil"],
   "Di-Buffer" => ["Ext-Abschaltung", "Ext-Sollwertbeeinflussung", "", "Sole-Minimum",
