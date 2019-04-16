@@ -543,7 +543,8 @@ sub WKRCD4_Set($@)
         my $max   = $properties->{max};
         $unp   = $properties->{unp};
 
-        return "Error: A numerical value between $min and $max is expected, got $arg instead."
+	$arg =~ s/\,/./g;
+        return "Error: A numeric value between $min and $max is expected, got $arg instead."
             if(($arg !~ m/^-?[\d.]+$/ || $arg < $min || $arg > $max) && ($unp ne "B8" && $unp ne "CCC"));
 
         # If it's a binary value, check for validity
