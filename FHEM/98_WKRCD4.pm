@@ -9,7 +9,7 @@
 #
 # Ausgeführte Änderungen:
 #       Speicheradressen für Readings an SW-Version 8011 angepasst
-#       Abfrage-Bytes auf 0x122 verringert (ansonsten zu viel für SW-Version 8011: max. ~150)
+#       Abfrage-Bytes auf 0x122 verringert (ansonsten zu viel für SW-Version 8011: max. 152)
 #       Mehrere Get- und Set-Abfragen hinzugefügt
 #       Min-/Max-Werte bei allen sets hinzugefügt
 #       "Status"-Reading entfernt (kann aber unten aktiviert werden, einfach Kommentar-# entfernen)
