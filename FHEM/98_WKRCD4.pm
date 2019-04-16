@@ -123,6 +123,8 @@ my %WKRCD4_BinaryValues = (
 
   "Warnung-Sonstige" => ["", "", "", "Solestand Minimum", "Do-Buffer in Handstellung",
                         "Außenfuehler defekt", "Hz-Vorlauffuehler defekt", "Hz-Ruecklauffuehler defekt"],
+			
+  "Unterbrechungen" => ["", "", "", "Schalthaeufigkeit", "", "", "", ""],
 );
 
 $WKRCD4_BinaryValues{"Ausfall-Do-Buffer"} = $WKRCD4_BinaryValues{"Do-Buffer"};
