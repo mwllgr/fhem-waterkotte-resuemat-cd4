@@ -489,7 +489,11 @@ sub WKRCD4_Set($@)
             }
 	    elsif($current->{unp} eq "C" && $current->{min} == 0 && $current->{max} == 8)
 	    {
-	    	$finalReturn .= ":slider,0,1,8";
+	    	$finalReturn .= ":0";
+		for(my $i = 1; $i <= 8; $i++)
+		{
+		    $finalReturn .= "," . $i;
+		}
 	    }
 	    else
             {
