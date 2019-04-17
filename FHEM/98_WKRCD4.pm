@@ -487,9 +487,9 @@ sub WKRCD4_Set($@)
                 # Bool value, only 0 and 1 for set available
                 $finalReturn .= ":0,1"
             }
-	    elsif($current->{unp} eq "CCC" && $current->{fmat} eq "%3$02d:%2$02d:%1$02d")
+	    elsif($current->{unp} eq "C" && $current->{min} == 0 && $current->{max} == 8)
 	    {
-	    	$finalReturn .= ":time";
+	    	$finalReturn .= ":slider,0,1,8";
 	    }
 	    else
             {
