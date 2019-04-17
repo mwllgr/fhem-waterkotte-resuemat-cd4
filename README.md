@@ -259,6 +259,7 @@ Check out [examples.md](/examples.md) to find some snippets for attributes and n
   * Mode-Heizung
   * Mode-Wasser
   * Modem-Klingelzeit
+  * ResetAnforderung
   * Schluesselnummer
   * St2-bei-EvuAbsch
   * Status-Gesamt
@@ -290,6 +291,7 @@ Check out [examples.md](/examples.md) to find some snippets for attributes and n
   * Warnung-Ausgang
   * Warnung-Eingang
   * Warnung-Sonstige
+  * Werkseinstellung
   * Ww
   * Ww-Abschaltung
   * Ww-Becken-Hysterese
