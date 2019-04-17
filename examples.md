@@ -10,7 +10,20 @@
 Use the following code snippet for the attribute `stateFormat` to display some information instead of the regular "connected":
 ```
 {
-	my $state = ""; $state = "Hz: " . ReadingsVal($name, "Msg-Mode-Heizung", "---");
+	my $state = "";
+	my $hz = ReadingsVal($name, "Msg-Mode-Heizung", "---");
+	my $dobuf = ReadingsVal($name, "Do-Buffer", "00000000");
+	my $finalHz = $hz;
+	
+	if($hz eq "KeinBedarf" || $hz eq "---")
+	{
+		if($dobuf eq "00100000" || $dobuf eq "00101000")
+		{
+			$finalHz = "NurPumpe";
+		}
+	}
+	
+	$state = "Hz: " . $finalHz;
 	$state .= " | Ww: " . ReadingsVal($name, "Msg-Mode-Wasser", "---");
 	$state .= " | Aussen: " . ReadingsVal($name, "Temp-Aussen", "---");
 }
