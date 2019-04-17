@@ -13,17 +13,17 @@ Use the following code snippet for the attribute `stateFormat` to display some i
 	my $state = "";
 	my $hz = ReadingsVal($name, "Msg-Mode-Heizung", "---");
 	my $dobuf = ReadingsVal($name, "Do-Buffer", "00000000");
-	my $finalHz = $hz;
 	
 	if($hz eq "KeinBedarf" || $hz eq "---")
 	{
+		# Pumpe-Hz / Pumpe-Hz, Kurbelwannenhz
 		if($dobuf eq "00100000" || $dobuf eq "00101000")
 		{
-			$finalHz = "NurPumpe";
+			$hz = "NurPumpe";
 		}
 	}
 	
-	$state = "Hz: " . $finalHz;
+	$state = "Hz: " . $hz;
 	$state .= " | Ww: " . ReadingsVal($name, "Msg-Mode-Wasser", "---");
 	$state .= " | Aussen: " . ReadingsVal($name, "Temp-Aussen", "---");
 }
