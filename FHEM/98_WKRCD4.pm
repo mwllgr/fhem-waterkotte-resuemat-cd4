@@ -329,8 +329,8 @@ sub WKRCD4_Define($$)
     $hash->{SerialBadReads}     = 0;
 
     # Send wakeup string (read 2 values preceeded with AT)
-    $hash->{LastRequestAdr}     = 0;
-    $hash->{LastRequestLen}     = 4;
+    $hash->{LastRequestAdr}     = -1;
+    $hash->{LastRequestLen}     = 0;
     $hash->{LastRequest}        = gettimeofday();
     my $ret = DevIo_OpenDev( $hash, 0, "WKRCD4_Wakeup" );
 
@@ -738,8 +738,8 @@ sub WKRCD4_Wakeup($)
 
     $hash->{SerialRequests}++;
 
-    $hash->{LastRequestAdr} = 0;
-    $hash->{LastRequestLen} = 4;
+    $hash->{LastRequestAdr} = -1;
+    $hash->{LastRequestLen} = 0;
     $hash->{LastRequest}    = gettimeofday();
 
     # my $cmd = "41540D10020115000000041003FE0310020115003000041003FDC3100201150034000410037D90";
