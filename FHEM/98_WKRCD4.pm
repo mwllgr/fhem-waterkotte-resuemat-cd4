@@ -265,8 +265,8 @@ my %frameReadings = (
  'Do-Handkanal'             => { addr => 0x114, bytes => 0x001, menu => '7.00*', unp => 'C', min => 0, max => 8 },
  'Do-Handkanal-Ein'         => { addr => 0x115, bytes => 0x001, menu => '7.01*', unp => 'C', min => 0, max => 1 },
  'AnalogKorrFaktor'         => { addr => 0x116, bytes => 0x004, menu => '9.04*', fmat => '%0.4f', unp => 'f<', min => 0.8000, max => 1.2000 },
- # Disabled because unsure if readings are correct:
- # 'Neu-Start'               => { addr => 0x120, bytes => 0x001, menu => '9.06*', unp => 'C', min => 0, max => 255 },
+ # Disabled because address incorrect
+ # 'Neu-Start'               => { addr => 0x119, bytes => 0x001, menu => '9.06*', unp => 'C', min => 0, max => 255 },
  'Run-Flag'                => { addr => 0x11A, bytes => 0x001, menu => '9.07*', unp => 'C', min => 0, max => 1 },
 );
 
