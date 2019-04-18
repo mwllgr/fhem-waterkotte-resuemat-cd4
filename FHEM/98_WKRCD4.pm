@@ -97,8 +97,8 @@ my %WKRCD4_advanced = (
   "Schluesselnummer" => "Schluesselnummer",
   "Hz-Ext-Freigabe" => "Hz-Ext-Freigabe",
   "Hz-Ext-TempRueckl-Soll" => "Hz-Ext-TempRueckl-Soll",
-  "Temp-QAus-Min" => "Temp-QAus-Min",
-  "Temp-Verdampfer-Min" => "Temp-Verdampfer-Min",
+  "St2-Temp-QAus-Min" => "Temp-QAus-Min",
+  "St2-Temp-Verdampfer-Min" => "Temp-Verdampfer-Min",
   "Estrich-Aufhz" => "Estrich-Aufhz",
   "Hz-Ext-Steuerung" => "Hz-Ext-Steuerung",
   "St2-bei-EvuAbsch" => "St2-bei-EvuAbsch",
@@ -132,7 +132,7 @@ my %WKRCD4_BinaryValues = (
 
 $WKRCD4_BinaryValues{"Ausfall-Do-Buffer"} = $WKRCD4_BinaryValues{"Do-Buffer"};
 $WKRCD4_BinaryValues{"Ausfall-Di-Buffer"} = $WKRCD4_BinaryValues{"Di-Buffer"};
-$WKRCD4_BinaryValues{"Ausfall-Betriebszust"} = $WKRCD4_BinaryValues{"Betriebszustaende"};
+$WKRCD4_BinaryValues{"Ausfall-BetriebMode"} = $WKRCD4_BinaryValues{"Betriebszustaende"};
 
 # Definition of the values that can be read / written
 # with the relative address, number of bytes and
@@ -187,7 +187,7 @@ my %frameReadings = (
  'FuehlRaum-Zaehler0'       => { addr => 0x05F, bytes => 0x002, menu => '4.10*', unp => 'n' },
  'Ausfall-Zeit'             => { addr => 0x061, bytes => 0x003, menu => '5.00', fmat => '%3$02d:%2$02d:%1$02d', unp => 'CCC' },
  'Ausfall-Datum'            => { addr => 0x064, bytes => 0x003, menu => '5.01', fmat => '%02d.%02d.%02d', unp => 'CCC' },
- 'Ausfall-Betriebszust'     => { addr => 0x067, bytes => 0x001, menu => '5.02', unp => 'B8' },
+ 'Ausfall-BetriebMode'      => { addr => 0x067, bytes => 0x001, menu => '5.02', unp => 'B8' },
  'Ausfall-Do-Buffer'        => { addr => 0x068, bytes => 0x001, menu => '5.03', unp => 'B8' },
  'Ausfall-Di-Buffer'        => { addr => 0x069, bytes => 0x001, menu => '5.04', unp => 'B8' },
  'Ausfall-FuehlAusfall'     => { addr => 0x06A, bytes => 0x001, menu => '5.05', unp => 'B8' },
@@ -256,10 +256,10 @@ my %frameReadings = (
  'Schluesselnummer'         => { addr => 0x102, bytes => 0x001, menu => '6.06', unp => 'C', min => 0, max => 255 },
  'Hz-Ext-Freigabe'          => { addr => 0x103, bytes => 0x001, menu => '6.07*', unp => 'C', min => 0, max => 1 },
  'Hz-Ext-TempRueckl-Soll'   => { addr => 0x104, bytes => 0x004, menu => '6.08*', fmat => '%0.1f', unp => 'f<', min => 0.0, max => 30.0 },
- 'Temp-QAus-Min'            => { addr => 0x108, bytes => 0x004, menu => '6.09*', fmat => '%0.1f', unp => 'f<', min => -25.0, max => 20.0 },
- 'Temp-Verdampfer-Min'      => { addr => 0x10C, bytes => 0x004, menu => '6.10*', fmat => '%0.1f', unp => 'f<', min => -25.0, max => 20.0 },
+ 'St2-Temp-QAus-Min'        => { addr => 0x108, bytes => 0x004, menu => '6.09*', fmat => '%0.1f', unp => 'f<', min => -25.0, max => 20.0 },
+ 'St2-Temp-Verdampfer-Min'  => { addr => 0x10C, bytes => 0x004, menu => '6.10*', fmat => '%0.1f', unp => 'f<', min => -25.0, max => 20.0 },
  'Estrich-Aufhz'            => { addr => 0x110, bytes => 0x001, menu => '6.11*', unp => 'C', min => 0, max => 1 },
- 'Hz-Ext-Steuerung'          => { addr => 0x111, bytes => 0x001, menu => '6.12*', unp => 'B8' },
+ 'Hz-Ext-Steuerung'         => { addr => 0x111, bytes => 0x001, menu => '6.12*', unp => 'B8' },
  'St2-bei-EvuAbsch'         => { addr => 0x112, bytes => 0x001, menu => '6.13*', unp => 'C', min => 0, max => 1 },
  'Freigabe-Beckenwasser'    => { addr => 0x113, bytes => 0x001, menu => '6.14*', unp => 'C', min => 0, max => 1 },
  'Do-Handkanal'             => { addr => 0x114, bytes => 0x001, menu => '7.00*', unp => 'C', min => 0, max => 8 },
@@ -790,46 +790,56 @@ sub WKRCD4_GetUpdate($)
 ########################################
 sub WKRCD4_Attr($$$$)
 {
-	my ( $cmd, $name, $attrName, $attrValue ) = @_;
-  my $restoreOldSets = 0;
+  my ( $cmd, $name, $attrName, $attrValue ) = @_;
 
-	if ($cmd eq "set") {
+  if ($cmd eq "set") {
     # Advanced mode: Enables the advanced readings
-		if ($attrName eq "enableAdvancedMode") {
-			if($attrValue == 1)
+    if ($attrName eq "enableAdvancedMode") {
+      if($attrValue == 0 || $attrValue == 1)
       {
-        # Merge the hashes
-        %WKRCD4_sets = (%WKRCD4_sets, %WKRCD4_advanced);
-        %WKRCD4_gets = %WKRCD4_sets;
-        # Don't forget to merge the user's gets
-        %WKRCD4_gets = (%WKRCD4_gets, %WKRCD4_gets_more);
-      }
-      elsif($attrValue == 0)
-      {
-        $restoreOldSets = 1;
+        AdvancedMode($attrValue);
       }
       else
       {
         return "Error: Valid values are 0 and 1.";
       }
-		}
-	}
+    }
+  }
   else
   {
     if ($attrName eq "enableAdvancedMode") {
-      $restoreOldSets = 1;
+      AdvancedMode(0);
     }
   }
+  
+  return undef;
+}
 
-  if($restoreOldSets)
+#
+# Enables/Disables advanced mode based on parameter
+#######################################################
+sub AdvancedMode($)
+{
+  my ($action) = @_;
+  
+  if($action == 0)
   {
     # Restore old sets and gets
     %WKRCD4_sets = %WKRCD4_sets_default;
     %WKRCD4_gets = %WKRCD4_sets;
+    # Merge user gets
     %WKRCD4_gets = (%WKRCD4_gets, %WKRCD4_gets_more);
   }
-
-	return undef;
+  elsif($action == 1)
+  {
+    # Merge the hashes
+    %WKRCD4_sets = (%WKRCD4_sets, %WKRCD4_advanced);
+    %WKRCD4_gets = %WKRCD4_sets;
+    # Merge user gets
+    %WKRCD4_gets = (%WKRCD4_gets, %WKRCD4_gets_more);
+  }
+  
+  return $action;
 }
 
 #
