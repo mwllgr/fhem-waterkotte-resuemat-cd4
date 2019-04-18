@@ -260,6 +260,7 @@ Check out [examples.md](/examples.md) to find some snippets for attributes and n
   * Mode-Wasser
   * Modem-Klingelzeit
   * Msg-* (Binary values to readable strings)
+  * Neu-Start
   * ResetAnforderung
   * Run-Flag
   * Schluesselnummer
