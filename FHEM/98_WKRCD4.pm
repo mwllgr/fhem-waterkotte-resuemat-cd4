@@ -490,7 +490,7 @@ sub WKRCD4_Set($@)
                 # Bool value, only 0 and 1 for set available
                 $finalReturn .= ":0,1";
             }
-	    elsif($current->{min} == $current->{max})
+	    elsif(($current->{unp} eq "C" || $current->{unp} eq "n") && ($current->{min} == $current->{max}))
 	    {
 	        # One-option field (no argument)
 	        $finalReturn .= ":noArg";
