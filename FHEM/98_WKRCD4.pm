@@ -972,3 +972,59 @@ sub setBinaryReadings($)
 }
 
 1;
+
+
+
+
+=pod
+=item device
+=item summary Module for communicating with the Waterkotte Resümat CD4
+
+=begin html
+ <a name="WKRCD4"></a>
+ <h3>WKRCD4</h3>
+ This module interacts with the Waterkotte Resümat CD4.
+
+ <ul><br>
+  <a name="WKRCD4_Define"></a>
+  <b>Define</b>
+  <ul> 
+   <code>define &lt;name&gt; WKRCD4 &lt;device@baudrate&gt; &lt;interval&gt;</code><br>
+   <br>
+   Example: <code>define Heating WKRCD4 /dev/ttyUSB0@9600 60</code>
+ </ul><br>
+
+ <ul><br>
+  <a name="WKRCD4_Attr"></a>
+  <b>Attributes</b>
+  <ul>
+   <li>enableAdvancedMode<br><br>
+     Enables or disables the advanced sets.<br>
+     0 -> Disabled<br>
+     1 -> Enabled</li>
+  </ul>
+ </ul> 
+
+ <ul><br>
+  <a name="WKRCD4_Set"></a>
+  <b>Set</b>
+  <ul>
+   <li>dateTimeSync<br>
+     Sends the server date and time to the Resümat controller.<br></li>
+  </ul>
+ </ul> 
+
+ <ul><br>
+  <a name="WKRCD4_Get"></a>
+  <b>Get</b>
+  <ul>
+   <li>menuEntry &lt;reading&gt;<br>
+     Returns the menu entry number on the Resümat controller of a reading.<br></li>
+
+   <li>menuEntryHidden &lt;reading&gt;<br>
+     Returns 1 if the entry is hidden by default, 0 if not.<br></li>
+  </ul>
+ </ul>
+=end html
+
+=cut
