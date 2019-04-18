@@ -90,7 +90,10 @@ my %WKRCD4_advanced = (
   "Do-Handkanal" => "Do-Handkanal",
   "Do-Handkanal-Ein" => "Do-Handkanal-Ein",
   "Kennwort" => "Kennwort",
+  # -- Disabled because dangerous/not needed usually --
   # "Werkseinstellung" => "Werkseinstellung",
+  # "Betriebs-Mode" => "Betriebs-Mode",
+  # --
   "ResetAnforderung" => "ResetAnforderung",
   "Modem-Klingelzeichen" => "Modem-Klingelzeichen",
   "Fremdzugriff" => "Fremdzugriff",
