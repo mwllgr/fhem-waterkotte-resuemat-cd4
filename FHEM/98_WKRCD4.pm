@@ -797,7 +797,7 @@ sub WKRCD4_Attr($$$$)
     if ($attrName eq "enableAdvancedMode") {
       if($attrValue == 0 || $attrValue == 1)
       {
-        AdvancedMode($attrValue);
+        advancedMode($attrValue);
       }
       else
       {
@@ -808,7 +808,7 @@ sub WKRCD4_Attr($$$$)
   else
   {
     if ($attrName eq "enableAdvancedMode") {
-      AdvancedMode(0);
+      advancedMode(0);
     }
   }
   
@@ -818,7 +818,7 @@ sub WKRCD4_Attr($$$$)
 #
 # Enables/Disables advanced mode based on parameter
 #######################################################
-sub AdvancedMode($)
+sub advancedMode($)
 {
   my ($action) = @_;
   
