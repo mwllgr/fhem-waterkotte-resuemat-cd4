@@ -9,7 +9,7 @@
 #
 # Ausgeführte Änderungen:
 #       Speicheradressen für Readings an SW-Version 8011 angepasst
-#       Abfrage-Bytes auf 0x11A verringert (ansonsten zu viel für SW-Version 8011: max. 152)
+#       Abfrage-Bytes auf 0x11B verringert (ansonsten zu viel für SW-Version 8011: max. 152)
 #       Mehrere Get- und Set-Abfragen hinzugefügt
 #       Min-/Max-Werte bei allen sets hinzugefügt
 #       "Status"-Reading entfernt (kann aber unten aktiviert werden, einfach Kommentar-# entfernen)
@@ -792,9 +792,9 @@ sub WKRCD4_GetUpdate($)
 
     $hash->{SerialRequests}++;
 
-    my $cmd = pack('C*', WPCMD($hash, 'read', 0, 0x011A));
+    my $cmd = pack('C*', WPCMD($hash, 'read', 0, 0x011B));
     $hash->{LastRequestAdr} = 0;
-    $hash->{LastRequestLen} = 0x011A;
+    $hash->{LastRequestLen} = 0x011B;
     $hash->{LastRequest}    = gettimeofday();
     DevIo_SimpleWrite( $hash, $cmd , 0 );
 
