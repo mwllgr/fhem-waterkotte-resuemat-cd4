@@ -206,7 +206,7 @@ my %frameReadings = (
  'Ausfall-Reset'            => { addr => 0x092, bytes => 0x001, menu => '5.18', unp => 'C', min => 0, max => 255 },
  'Kennwort'                 => { addr => 0x093, bytes => 0x001, menu => '6.00', unp => 'C', min => 0, max => 255 },
  'Werkseinstellung'         => { addr => 0x094, bytes => 0x001, menu => '6.01', unp => 'C', min => 0, max => 255 },
- 'ResetAnforderung'         => { addr => 0x095, bytes => 0x001, menu => '6.02', unp => 'C', min => 0, max => 255 },
+ 'ResetAnforderung'         => { addr => 0x095, bytes => 0x001, menu => '6.03', unp => 'C', min => 0, max => 255 },
  'Betriebszustaende'        => { addr => 0x096, bytes => 0x001, menu => '8.00*', unp => 'B8' },
  'Do-Buffer'                => { addr => 0x097, bytes => 0x001, menu => '8.01*', unp => 'B8' },
  'Di-Buffer'                => { addr => 0x098, bytes => 0x001, menu => '8.02*', unp => 'B8' },
