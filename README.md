@@ -259,7 +259,9 @@ Check out [examples.md](/examples.md) to find some snippets for attributes and n
   * Mode-Heizung
   * Mode-Wasser
   * Modem-Klingelzeit
+  * Msg-* (Binary values to readable strings)
   * ResetAnforderung
+  * Run-Flag
   * Schluesselnummer
   * St2-bei-EvuAbsch
   * Status-Gesamt
