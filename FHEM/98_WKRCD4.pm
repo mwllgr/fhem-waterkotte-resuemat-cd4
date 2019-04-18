@@ -116,12 +116,12 @@ my %WKRCD4_advanced = (
 # Binary value-arrays as hash
 my %WKRCD4_BinaryValues = (
   "Mode-Heizung" => ["UnterbrFuehlerfehler", "KeinBedarf", "Unterdrueckt", "Zeitprog", "Sommer", "SchnellAufhz", "ExtAnheb", "Normal"],
-  "Mode-Wasser" => ["", "", "", "", "", "KeinBedarf", "Zeitprog", "Normal"],
-  "Betriebszustaende" => ["", "", "", "", "Warnung", "St2-Betrieb", "Hz-Betrieb", "Ww-Betrieb"],
+  "Mode-Wasser" => ["", "", "", "Unterdrueckt", "UnterbrFuehlerfehler", "KeinBedarf", "Zeitprog", "Normal"],
+  "Betriebszustaende" => ["Ext. Steuerung", "", "", "Unterbrechung", "Hand-Betrieb", "St2-Betrieb", "Hz-Betrieb", "Ww-Betrieb"],
 
   "Do-Buffer" => ["Pumpe-Quelle", "Pumpe-Ww", "Pumpe-Hz", "St2", "Kurbelwannenhz", "Alarm", "Kompr-1", "Magnetventil"],
   "Di-Buffer" => ["Ext-Abschaltung", "Ext-Sollwertbeeinflussung", "", "Sole-Minimum",
-                  "Pumpe-Quelle", "HD-Pressostat", "ND-Pressostat", "Oeldruck-Pressostat"],
+                  "Pumpe-Quelle", "HD-Pressostat", "ND-Pressostat", "Oeldruck/Kompr-Störung"],
 
   "Warnung-Eingang" => ["", "", "", "",
                         "Diff. QAus-Verdampf zu hoch", "Diff. QEin-QAus zu hoch",
@@ -133,7 +133,8 @@ my %WKRCD4_BinaryValues = (
   "Warnung-Sonstige" => ["", "", "", "Solestand Minimum", "Do-Buffer in Handstellung",
                         "Außenfuehler defekt", "Hz-Vorlauffuehler defekt", "Hz-Ruecklauffuehler defekt"],
 			
-  "Unterbrechungen" => ["", "", "", "Schalthaeufigkeit", "", "", "", ""],
+  "Unterbrechungen" => ["Temp. Hz-Vorlauf zu hoch", "Ww-Fuehler defekt", "Hz-Fuehler defekt", "WPumpe-Fuehler defekt",
+                        "Schalthaeufigkeit", "Ext. Abschaltung", "Temp. QAus zu niedrig", "Ungueltiger Betriebs-Mode"],
 );
 
 $WKRCD4_BinaryValues{"Ausfall-Do-Buffer"} = $WKRCD4_BinaryValues{"Do-Buffer"};
