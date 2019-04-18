@@ -9,7 +9,7 @@
 #
 # Ausgeführte Änderungen:
 #       Speicheradressen für Readings an SW-Version 8011 angepasst
-#       Abfrage-Bytes auf 0x122 verringert (ansonsten zu viel für SW-Version 8011: max. 152)
+#       Abfrage-Bytes auf 0x11A verringert (ansonsten zu viel für SW-Version 8011: max. 152)
 #       Mehrere Get- und Set-Abfragen hinzugefügt
 #       Min-/Max-Werte bei allen sets hinzugefügt
 #       "Status"-Reading entfernt (kann aber unten aktiviert werden, einfach Kommentar-# entfernen)
@@ -95,15 +95,16 @@ my %WKRCD4_advanced = (
   "Modem-Klingelzeichen" => "Modem-Klingelzeichen",
   "Fremdzugriff" => "Fremdzugriff",
   "Schluesselnummer" => "Schluesselnummer",
-  # "Hz-Ext-Freigabe" => "Hz-Ext-Freigabe",
-  # "Hz-Ext-TempRueckl-Soll" => "Hz-Ext-TempRueckl-Soll",
+  "Hz-Ext-Freigabe" => "Hz-Ext-Freigabe",
+  "Hz-Ext-TempRueckl-Soll" => "Hz-Ext-TempRueckl-Soll",
   "Temp-QAus-Min" => "Temp-QAus-Min",
   "Temp-Verdampfer-Min" => "Temp-Verdampfer-Min",
   "Estrich-Aufhz" => "Estrich-Aufhz",
-  # "Hz-Ext-Steuerung" => "Hz-Ext-Steuerung",
+  "Hz-Ext-Steuerung" => "Hz-Ext-Steuerung",
   "St2-bei-EvuAbsch" => "St2-bei-EvuAbsch",
-  # "Freigabe-Beckenwasser" => "Freigabe-Beckenwasser",
+  "Freigabe-Beckenwasser" => "Freigabe-Beckenwasser",
   "AnalogKorrFaktor" => "AnalogKorrFaktor",
+  "Run-Flag" => "Run-Flag",
 );
 
 # Binary value-arrays as hash
@@ -253,24 +254,20 @@ my %frameReadings = (
  'Modem-Klingelzeichen'     => { addr => 0x100, bytes => 0x001, menu => '6.04', unp => 'C', min => 1, max => 6 },
  'Fremdzugriff'             => { addr => 0x101, bytes => 0x001, menu => '6.05', unp => 'C', min => 0, max => 1 },
  'Schluesselnummer'         => { addr => 0x102, bytes => 0x001, menu => '6.06', unp => 'C', min => 0, max => 255 },
- # ---- Might not be correct (1)
  'Hz-Ext-Freigabe'          => { addr => 0x103, bytes => 0x001, menu => '6.07*', unp => 'C', min => 0, max => 1 },
- 'Hz-Ext-TempRueckl-Soll'   => { addr => 0x104, bytes => 0x004, menu => '6.08*', fmat => '%0.1f', unp => 'f<', min => 20.0, max => 30.0 },
- # ---- End of (1)
+ 'Hz-Ext-TempRueckl-Soll'   => { addr => 0x104, bytes => 0x004, menu => '6.08*', fmat => '%0.1f', unp => 'f<', min => 0.0, max => 30.0 },
  'Temp-QAus-Min'            => { addr => 0x108, bytes => 0x004, menu => '6.09*', fmat => '%0.1f', unp => 'f<', min => -25.0, max => 20.0 },
  'Temp-Verdampfer-Min'      => { addr => 0x10C, bytes => 0x004, menu => '6.10*', fmat => '%0.1f', unp => 'f<', min => -25.0, max => 20.0 },
  'Estrich-Aufhz'            => { addr => 0x110, bytes => 0x001, menu => '6.11*', unp => 'C', min => 0, max => 1 },
+ 'Hz-Ext-Steuerung'          => { addr => 0x111, bytes => 0x001, menu => '6.12*', unp => 'B8' },
  'St2-bei-EvuAbsch'         => { addr => 0x112, bytes => 0x001, menu => '6.13*', unp => 'C', min => 0, max => 1 },
-  # ---- Might not be correct (2)
- 'Hz-ExtSteuerung'          => { addr => 0x111, bytes => 0x001, menu => '6.12*', unp => 'B8' },
  'Freigabe-Beckenwasser'    => { addr => 0x113, bytes => 0x001, menu => '6.14*', unp => 'C', min => 0, max => 1 },
- # ---- End of (2)
  'Do-Handkanal'             => { addr => 0x114, bytes => 0x001, menu => '7.00*', unp => 'C', min => 0, max => 8 },
  'Do-Handkanal-Ein'         => { addr => 0x115, bytes => 0x001, menu => '7.01*', unp => 'C', min => 0, max => 1 },
  'AnalogKorrFaktor'         => { addr => 0x116, bytes => 0x004, menu => '9.04*', fmat => '%0.4f', unp => 'f<', min => 0.8000, max => 1.2000 },
  # Disabled because unsure if readings are correct:
  # 'Neu-Start'               => { addr => 0x120, bytes => 0x001, menu => '9.06*', unp => 'C', min => 0, max => 255 },
- # 'Run-Flag'                => { addr => 0x121, bytes => 0x001, menu => '9.07*', unp => 'C', min => 0, max => 1 },
+ 'Run-Flag'                => { addr => 0x11A, bytes => 0x001, menu => '9.07*', unp => 'C', min => 0, max => 1 },
 );
 
 #
@@ -777,9 +774,9 @@ sub WKRCD4_GetUpdate($)
 
     $hash->{SerialRequests}++;
 
-    my $cmd = pack('C*', WPCMD($hash, 'read', 0, 0x0122));
+    my $cmd = pack('C*', WPCMD($hash, 'read', 0, 0x011A));
     $hash->{LastRequestAdr} = 0;
-    $hash->{LastRequestLen} = 0x0122;
+    $hash->{LastRequestLen} = 0x011A;
     $hash->{LastRequest}    = gettimeofday();
     DevIo_SimpleWrite( $hash, $cmd , 0 );
 
