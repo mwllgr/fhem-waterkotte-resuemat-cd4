@@ -258,12 +258,14 @@ Check out [examples.md](/examples.md) to find some snippets for attributes and n
   * Messbegin-Zeit
   * Mode-Heizung
   * Mode-Wasser
-  * Modem-Klingelzeit
+  * Modem-Klingelzeichen
   * Msg-* (Binary values to readable strings)
   * Neu-Start
   * ResetAnforderung
   * Run-Flag
   * Schluesselnummer
+  * St2-Temp-QAus-Min
+  * St2-Temp-Verdampfer-Min
   * St2-bei-EvuAbsch
   * Status-Gesamt
   * Status-Heizung
@@ -275,13 +277,11 @@ Check out [examples.md](/examples.md) to find some snippets for attributes and n
   * Temp-Aussen-1h
   * Temp-Aussen-24h
   * Temp-Kondensator
-  * Temp-QAus-Min
   * Temp-Raum
   * Temp-Raum-1h
   * Temp-Ruecklauf
   * Temp-Ruecklauf-Soll
   * Temp-Verdampfer
-  * Temp-Verdampfer-Min
   * Temp-Vorlauf
   * Temp-WQuelle-Aus
   * Temp-WQuelle-Ein
