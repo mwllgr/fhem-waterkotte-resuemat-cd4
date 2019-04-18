@@ -227,6 +227,7 @@ my %frameReadings = (
  'CPU-Boot-Zeit'            => { addr => 0x0AA, bytes => 0x003, menu => '9.02', fmat => '%3$02d:%2$02d:%1$02d', unp => 'CCC' },
  'CPU-Boot-Datum'           => { addr => 0x0AD, bytes => 0x003, menu => '9.03', fmat => '%02d.%02d.%02d', unp => 'CCC' },
  'CRC-Summe'                => { addr => 0x0B0, bytes => 0x002, menu => '9.05*', unp => 'n' },
+ 'Neu-Start'                => { addr => 0x0B2, bytes => 0x001, menu => '9.06*', unp => 'C' },
  'Hz-Abschaltung'           => { addr => 0x0B3, bytes => 0x001, menu => '1.00', unp => 'C', min => 0, max => 1 },
  'Hz-Temp-Einsatz'          => { addr => 0x0B4, bytes => 0x004, menu => '1.01', fmat => '%0.1f', unp => 'f<', min => 10.0, max => 30.0 },
  'Hz-Temp-BasisSoll'        => { addr => 0x0B8, bytes => 0x004, menu => '1.02', fmat => '%0.1f', unp => 'f<', min => 15.0, max => 50.0 },
