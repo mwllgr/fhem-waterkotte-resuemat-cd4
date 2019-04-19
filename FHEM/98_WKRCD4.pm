@@ -501,11 +501,11 @@ sub WKRCD4_Set($@)
 	    }
 	    elsif($current->{unp} eq "C" && $current->{min} == 0 && $current->{max} == 8)
 	    {
-	    	$finalReturn .= ":0";
-		for(my $i = 1; $i <= 8; $i++)
-		{
-		    $finalReturn .= "," . $i;
-		}
+		$finalReturn .= ":0_Deaktiviert";
+                for(my $i = 0; $i < 8; $i++)
+                {
+                    $finalReturn .= "," . ($i + 1) . "_" . $WKRCD4_BinaryValues{"Do-Buffer"}[8 - ($i + 1)];
+                }
 	    }
 	    else
             {
@@ -557,11 +557,16 @@ sub WKRCD4_Set($@)
     {
       # User does not want to sync time/date
         # Get details about the attribute requested from its hash
-        $addr  = $properties->{addr};
+        $addr = $properties->{addr};
         $bytes = $properties->{bytes};
-        my $min   = $properties->{min};
-        my $max   = $properties->{max};
-        $unp   = $properties->{unp};
+        my $min = $properties->{min};
+        my $max = $properties->{max};
+        $unp = $properties->{unp};
+	
+	if($attr eq "Do-Handkanal")
+        {
+          $arg = substr($arg, 0, 1);
+        }
 	
 	if($min != $max)
 	{
