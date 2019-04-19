@@ -137,6 +137,9 @@ my %WKRCD4_BinaryValues = (
                         "Schalthaeufigkeit", "Ext. Abschaltung", "Temp. QAus zu niedrig", "Ungueltiger Betriebs-Mode"],
 );
 
+$WKRCD4_BinaryValues{"Unterdr-Warnung-Eingang"} = $WKRCD4_BinaryValues{"Warnung-Eingang"};
+$WKRCD4_BinaryValues{"Unterdr-Warnung-Ausgang"} = $WKRCD4_BinaryValues{"Warnung-Ausgang"};
+$WKRCD4_BinaryValues{"Unterdr-Warnung-Sonstige"} = $WKRCD4_BinaryValues{"Warnung-Sonstige"};
 $WKRCD4_BinaryValues{"Ausfall-Do-Buffer"} = $WKRCD4_BinaryValues{"Do-Buffer"};
 $WKRCD4_BinaryValues{"Ausfall-Di-Buffer"} = $WKRCD4_BinaryValues{"Di-Buffer"};
 $WKRCD4_BinaryValues{"Ausfall-BetriebMode"} = $WKRCD4_BinaryValues{"Betriebszustaende"};
