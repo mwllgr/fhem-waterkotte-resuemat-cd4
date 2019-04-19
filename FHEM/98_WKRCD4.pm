@@ -981,6 +981,7 @@ sub setBinaryReadings($)
 =item summary Module for communicating with the Waterkotte Resümat CD4
 
 =begin html
+
  <a name="WKRCD4"></a>
  <h3>WKRCD4</h3>
  This module interacts with the Waterkotte Resümat CD4.
@@ -1025,6 +1026,7 @@ sub setBinaryReadings($)
      Returns 1 if the entry is hidden by default, 0 if not.<br></li>
   </ul>
  </ul>
+ 
 =end html
 
 =cut
