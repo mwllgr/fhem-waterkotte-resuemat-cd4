@@ -571,15 +571,19 @@ sub WKRCD4_Set($@)
           $arg = substr($arg, 0, 1);
         }
 	
-	if($min != $max)
+	# Only set if it's not binary
+	if($unp neq "B8")
 	{
-	  $arg =~ s/\,/./g;
-          return "Error: A numeric value between $min and $max is expected, got $arg instead."
-              if(($arg !~ m/^-?[\d.]+$/ || $arg < $min || $arg > $max) && ($unp ne "B8" && $unp ne "CCC"));
-        }
-	else
-	{
-	  $arg = $min;
+	  if($min != $max)
+	  {
+	    $arg =~ s/\,/./g;
+            return "Error: A numeric value between $min and $max is expected, got $arg instead."
+                if(($arg !~ m/^-?[\d.]+$/ || $arg < $min || $arg > $max) && ($unp ne "B8" && $unp ne "CCC"));
+          }
+	  else
+	  {
+	    $arg = $min;
+	  }
 	}
 	
         # If it's a binary value, check for validity
