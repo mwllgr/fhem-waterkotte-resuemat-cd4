@@ -84,8 +84,10 @@ my %WKRCD4_advanced = (
   "Ww-Becken-Temp-Soll" => "Ww-Becken-Temp-Soll",
   "Ww-Hysterese" => "Ww-Hysterese",
   "Ww-Becken-Hysterese" => "Ww-Becken-Hysterese",
+  # -- Disabled because not needed usually --
   # "Mess-Reset" => "Mess-Reset",
   # "Kompr-Mess-Reset" => "Kompr-Mess-Reset",
+  # --
   "Ausfall-Reset" => "Ausfall-Reset",
   "Unterdr-Warnung-Eingang" => "Unterdr-Warnung-Eingang",
   "Unterdr-Warnung-Ausgang" => "Unterdr-Warnung-Ausgang",
