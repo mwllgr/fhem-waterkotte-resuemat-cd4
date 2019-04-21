@@ -572,7 +572,7 @@ sub WKRCD4_Set($@)
         }
 	
 	# Only set if it's not binary
-	if($unp ne "B8")
+	if(defined($properties->{min}) && defined($properties->{max}))
 	{
 	  if($min != $max)
 	  {
