@@ -48,6 +48,20 @@ Please note: If the control unit doesn't respond, try sending "AT" and a carriag
  
 ---
 
+### CMDs
+#### PC -> Resümat
+`01 18` - Start logger/Show contents? (not compatible with FW 7000, 8000, 8011!)  
+`01 15` - Read memory  
+`01 14` - Write RTC (time/date) memory  
+`01 13` - Write memory (**Don't destroy your heat pump!**)
+
+#### Resümat -> PC
+`00 17` - Read response  
+`00 11` - Write response  
+`00 03` - Logger response (?, maybe)
+
+---
+
 Example command to **read data**:  
 `10 02 01 15 0000 0002 10 03 FE17`
 
@@ -56,7 +70,7 @@ Example command to **read data**:
 `02` - STX (Start of Text)  
 `01 15` - CMD (Heat pump command, 01 15 means "Read memory")  
 `0000` - Start address  
-`0002` - Bytes to read after start address (if you start at 0x00, the max value is 0x152 with SW-Version 8011)  
+`0002` - Bytes to read at start address (if you start at 0x00, the max value is 0x152 with SW-Version 8011)  
 `10` - DLE (Data Link Escape)  
 `03` - ETX (End of Text)  
 `FE17` - CRC-16 checksum of CMD, start address and bytes to read (More information below)
@@ -70,7 +84,7 @@ Example command to **write data**:
 `10 02` - DLE / STX  
 `01 13` - CMD (Heat pump command, 01 13 means "Write memory")  
 `00BC` - Start address  
-`0000C841` - Bytes to write after start address (0000C841 is a float - 25.0)  
+`0000C841` - Bytes to write at start address (0000C841 is a float - 25.0)  
 `10 03` - DLE / ETX  
 `851C` - CRC-16 checksum of CMD, start address and bytes to write (More information below)
 
@@ -82,7 +96,7 @@ Example command to **sync the time/date**:
 ### Further explanation (CMD to sync time/date)
 `10 02` - DLE / STX  
 `01 14` - CMD (Heat pump command, 01 14 means "Write time/date memory")  
-`0000` - Start address (?)  
+`0000` - Start address (maybe at RTC register?)  
 `1B 1E 0C` - SS:MM:HH (In that case: 27:30:12)  
 `16 02 13` - DD.MM.YY (In that case: 22.02.19)  
 `10 03` - DLE / ETX  
@@ -90,15 +104,16 @@ Example command to **sync the time/date**:
 
 ---
 
-### CMDs (PC -> Resümat)
-`01 18` - Start logger (? - not compatible with FW 7000, 8000, 8011)
-`01 15` - Read memory  
-`01 14` - Write RTC (time/date) memory
-`01 13` - Write memory (**Don't destroy your heat pump!**)
+Example command to **start the logger (or show the contents?)**:  
+`10 02 01 18 0000 001A 10 03 7C1C`
 
-## CMDs (Resümat -> PC)
-`00 17` - Read response
-`00 11` - Write response
+### Further explanation (CMD to start logger/show contents?)
+`10 02` - DLE / STX  
+`01 18` - CMD (Heat pump command, 01 18 means "Start logger" (?, or "Show logger contents"?)  
+`0000` - Start address (?)  
+`001A` - Bytes to read at start address (?)  
+`10 03` - DLE / ETX  
+`AF8D` - CRC-16 checksum of CMD, start address and bytes to read (More information below)
 
 ---
 
@@ -112,13 +127,22 @@ The bytes between `17` and `10` are the received data bytes.
 In that case, it would be `00`, because address `00E9` is the field "Ww-Abschaltung" (German for 'Warm water disabled'). At the time of the request, warm water was enabled, so the answer is `0`, not `1`.  
 `7200` is the checksum once again.
 
-Please note: If `10` appears two times in a row in the received data bytes you have to skip the second `10` to get correct values.
+Please note: If `10` appears in the data bytes, it is escaped using another `10`. Due to that, you have to skip one `10` to get correct values.
 
 ---
 
 #### Write response
 The control unit acknowledges any write command with the following response:  
 `16 10 02 00 11 00 10 03 6600 16`
+
+---
+
+#### Logger response
+Response for command `10 02 01 18 0000 001A 10 03 7C1C` (Start logger/Show contents?) resulted in the following response:
+`16 10 02 00 03 05 10 03 0A1E 16`
+
+Data to interpret might be between `03` and `10`.  
+Please note: Feature not supported on versions 7000, 8000 and 8011.
 
 ### Calculating a CRC-16
 Some people at the IP-Symcom forums already created [two PHP scripts to calculate the CRC-16](https://www.symcon.de/forum/threads/2092-ComPort-und-Waterkotte-abfragen/page2).  
