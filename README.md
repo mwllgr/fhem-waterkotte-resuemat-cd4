@@ -1,4 +1,4 @@
-# FHEM module for the Waterkotte Resümat CD4 control unit
+# FHEM module for the Waterkotte Resümat CD4
 
 ## General information
 ### Disclaimer
