@@ -5,7 +5,7 @@
 Do **not set any values** if the corresponding readings don't match the displayed data on the control unit itself or if any other readings are not correct! I'm not responsible for any damage!
 
 ### About the module
-**This module will not work for your heat pump if the official one (by user [StefanStrobel](https://wiki.fhem.de/wiki/Benutzer:StefanStrobel)) works for you! - It uses different memory addresses!** Successfully tested with a Resümat CD4 with software version 8011 on a _DS 5009.3_ heat pump.
+**This module will not work for your heat pump if the official one (by user [StefanStrobel](https://wiki.fhem.de/wiki/Benutzer:StefanStrobel)) works for you! - It uses different memory addresses!** Successfully tested with a Resümat CD4 with software version 8011 (should work on 7000 and 8000 too) on a _DS 5009.3_ heat pump.
 
 If it does not work for you, try to use the official module as seen in the [FHEM wiki](https://wiki.fhem.de/wiki/Waterkotte_heat_pump_with_Res%C3%BCmat_CD4).  
 It should already be in the `contrib/` folder of your FHEM installation.
@@ -90,10 +90,15 @@ Example command to **sync the time/date**:
 
 ---
 
-### Available CMDs
+### CMDs (PC -> Resümat)
+`01 18` - Start logger (? - not compatible with FW 7000, 8000, 8011)
 `01 15` - Read memory  
-`01 14` - Write time/date memory (Maybe more, won't try that...)  
+`01 14` - Write RTC (time/date) memory
 `01 13` - Write memory (**Don't destroy your heat pump!**)
+
+## CMDs (Resümat -> PC)
+`00 17` - Read response
+`00 11` - Write response
 
 ---
 
