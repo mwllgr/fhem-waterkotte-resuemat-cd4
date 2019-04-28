@@ -326,8 +326,8 @@ sub WKRCD4_Define($$)
 
     if(int(@a) == 4) {
         $interval= $a[3];
-        if ($interval < 20) {
-            return "Error: Interval too small, please use something > 20, default is 60.";
+        if ($interval < 4) {
+            return "Error: Interval too small, min. 4, default is 60.";
         }
     }
 
