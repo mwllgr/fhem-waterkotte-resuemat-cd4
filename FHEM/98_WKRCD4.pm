@@ -715,6 +715,12 @@ sub WKRCD4_Read($)
     my $crc    = unpack ('S>', $3);
     my $rest   = $4;
 
+    # Is the frame really complete?
+    if(@aframe < $hash->{LastRequestLen})
+    {
+        return "";
+    }
+    
     $hash->{buffer} = $rest;
     Log3 $name, 4, "$name: Read - Match: $msg CRC $crc";
     Log3 $name, 5, "$name: Read - Frame is " . unpack ('H*', pack ('C*', @aframe)) . ", Rest " . unpack ('H*', $rest);
