@@ -531,12 +531,18 @@ sub WKRCD4_Set($@)
     my $bytes;
     my $unp;
 
-    # Get hash pointer for the attribute requested from the global hash
-    my $properties = $frameReadings{$WKRCD4_sets{$attr}};
+    my $properties;
+    if(defined($WKRCD4_sets{$attr}))
+    {
+       # Get hash pointer for the attribute requested from the global hash
+       $properties = $frameReadings{$WKRCD4_sets{$attr}};
+    }
+
     if(!$properties) {
       if($attr eq "dateTimeSync")
       {
         # User wants to sync time/date
+        $addr = 0;
         my ($sec, $min, $hour, $mday, $mon, $year, $wday, $yday, $isdst) = localtime(time);
 
         # SS:MM:HH
@@ -716,7 +722,7 @@ sub WKRCD4_Read($)
     my $rest   = $4;
 
     # Is the frame really complete?
-    if(@aframe < $hash->{LastRequestLen})
+    if(($msg ne "0011") && (@aframe < $hash->{LastRequestLen}))
     {
         return "";
     }
