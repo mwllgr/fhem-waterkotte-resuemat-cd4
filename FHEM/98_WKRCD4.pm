@@ -674,8 +674,16 @@ sub WKRCD4_Set($@)
           @value = unpack ('C*', $vp);
         }
 
-        Log3 $name, 4, sprintf ("$name: Set - Will write $attr: %02x bytes starting from %02x with %s (%s) packed with $unp", $bytes, $addr, unpack ('H*', $vp), unpack ($unp, $vp));
-        $cmd = pack('C*', WPCMD($hash, 'write', $addr, $bytes, @value));
+	if($unp neq "CCC")
+	{
+          Log3 $name, 4, sprintf ("$name: Set - Will write $attr: %02x bytes starting from %02x with %s (%s) packed with $unp", $bytes, $addr, unpack ('H*', $vp), unpack ($unp, $vp));
+        }
+	else
+	{
+	  Log3 $name, 4, sprintf ("$name: Set - Will write time/date $attr: %02x bytes starting from %02x with %s packed with $unp", $bytes, $addr, unpack ('H*', $vp));
+	}
+	
+	$cmd = pack('C*', WPCMD($hash, 'write', $addr, $bytes, @value));
     }
 
     # Set internal variables to track the situation
