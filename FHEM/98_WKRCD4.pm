@@ -674,7 +674,7 @@ sub WKRCD4_Set($@)
           @value = unpack ('C*', $vp);
         }
 
-	if($unp neq "CCC")
+	if($unp ne "CCC")
 	{
           Log3 $name, 4, sprintf ("$name: Set - Will write $attr: %02x bytes starting from %02x with %s (%s) packed with $unp", $bytes, $addr, unpack ('H*', $vp), unpack ($unp, $vp));
         }
