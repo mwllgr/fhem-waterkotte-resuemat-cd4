@@ -415,7 +415,7 @@ sub WKRCD4_Get($@)
     if((!$WKRCD4_gets{$attr}) && substr($attr, 0, length($searchWord)) ne $searchWord) {
         my @cList = keys %WKRCD4_gets;
 
-        return "Unknown argument $attr, choose one of " . join(" ", @cList) . " menuEntry menuEntryHidden";
+        return "Unknown argument $attr, choose one of " . join(":noArg ", @cList, '') . " menuEntry:textField menuEntryHidden:textField";
     }
 
     my $properties;
@@ -426,7 +426,7 @@ sub WKRCD4_Get($@)
         $properties = $frameReadings{$arg};
 
         if(!$properties) {
-            return "No Entry in frameReadings found for \"$arg\"";
+            return "No entry in frameReadings found for \"$arg\"";
         }
 
         my $menuEntry = substr($properties->{menu}, 0, 4);
