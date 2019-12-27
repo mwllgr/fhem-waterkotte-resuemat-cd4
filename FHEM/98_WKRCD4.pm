@@ -412,10 +412,10 @@ sub WKRCD4_Get($@)
     my $arg = join("", @a);
     my $searchWord = "menuEntry";
 
-    if((!$WKRCD4_gets{$attr}) && substr($attr, 0, length($searchWord)) ne $searchWord && $attr ne "statusRequest") {
+    if((!$WKRCD4_gets{$attr}) && substr($attr, 0, length($searchWord)) ne $searchWord) {
         my @cList = keys %WKRCD4_gets;
 
-        return "Unknown argument $attr, choose one of " . join(":noArg ", @cList, '') . " menuEntry:textField menuEntryHidden:textField statusRequest:noArg";
+        return "Unknown argument $attr, choose one of " . join(":noArg ", @cList, '') . " menuEntry:textField menuEntryHidden:textField";
     }
 
     my $properties;
@@ -443,11 +443,6 @@ sub WKRCD4_Get($@)
         {
             return $menuEntryHidden ? 1 : 0;
         }
-    }
-    elsif($attr eq "statusRequest")
-    {
-        WKRCD4_GetUpdate($hash);
-        return "Update request sent.";
     }
     else
     {
@@ -490,7 +485,7 @@ sub WKRCD4_Set($@)
     my $attr = shift @a;
     my $arg = join("", @a);
 
-    if(!defined($WKRCD4_sets{$attr}) && $attr ne "dateTimeSync") {
+    if(!defined($WKRCD4_sets{$attr}) && $attr ne "dateTimeSync" && $attr ne "statusRequest") {
         my @cList = keys %WKRCD4_sets;
         my $finalReturn;
 
@@ -525,7 +520,7 @@ sub WKRCD4_Set($@)
             $finalReturn .= " ";
         }
 
-        return "Unknown argument $attr, choose one of dateTimeSync:noArg " . $finalReturn;
+        return "Unknown argument $attr, choose one of dateTimeSync:noArg statusRequest:noArg " . $finalReturn;
     }
 
     my $vp;
@@ -562,6 +557,11 @@ sub WKRCD4_Set($@)
         $bytes = 0x06;
 
         $isSpecialValue = 1;
+      }
+      elsif($attr eq "statusRequest")
+      {
+        WKRCD4_GetUpdate($hash);
+        return;
       }
       else
       {
@@ -1051,6 +1051,8 @@ sub setBinaryReadings($)
   <ul>
    <li>dateTimeSync<br>
      Sends the server date and time to the Resümat controller.<br></li>
+   <li>statusRequest<br>
+     Manually requests every reading from the heating controller.</li>
   </ul>
  </ul> 
 
@@ -1063,9 +1065,6 @@ sub setBinaryReadings($)
 
    <li>menuEntryHidden &lt;reading&gt;<br>
      Returns 1 if the entry is hidden by default, 0 if not.<br></li>
-     
-   <li>statusRequest<br>
-     Manually requests every reading from the heating controller.</li>
   </ul>
  </ul>
  
