@@ -412,10 +412,10 @@ sub WKRCD4_Get($@)
     my $arg = join("", @a);
     my $searchWord = "menuEntry";
 
-    if((!$WKRCD4_gets{$attr}) && substr($attr, 0, length($searchWord)) ne $searchWord) {
+    if((!$WKRCD4_gets{$attr}) && substr($attr, 0, length($searchWord)) ne $searchWord && $attr ne "statusRequest") {
         my @cList = keys %WKRCD4_gets;
 
-        return "Unknown argument $attr, choose one of " . join(":noArg ", @cList, '') . " menuEntry:textField menuEntryHidden:textField";
+        return "Unknown argument $attr, choose one of " . join(":noArg ", @cList, '') . " menuEntry:textField menuEntryHidden:textField statusRequest:noArg";
     }
 
     my $properties;
@@ -443,6 +443,11 @@ sub WKRCD4_Get($@)
         {
             return $menuEntryHidden ? 1 : 0;
         }
+    }
+    elsif($attr eq "statusRequest")
+    {
+        WKRCD4_GetUpdate($hash);
+        return "Update request sent.";
     }
     else
     {
@@ -1058,6 +1063,9 @@ sub setBinaryReadings($)
 
    <li>menuEntryHidden &lt;reading&gt;<br>
      Returns 1 if the entry is hidden by default, 0 if not.<br></li>
+     
+   <li>statusRequest<br>
+     Manually requests every reading from the heating controller.</li>
   </ul>
  </ul>
  
