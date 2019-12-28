@@ -159,7 +159,7 @@ Result reflected/reversed: `No`
 For me, [crccalc.com](https://crccalc.com/?crc=01%2015%200000%200002&method=crc16&datatype=hex) worked well. Just enter the part of the command between `10 02` and `10 03` - that would be the CMD, the start address and the bytes to be read after the start address. Make sure to choose CRC-16, the correct result is `CRC-16/BUYPASS`. 
 
 ### Data types
-  * Floats -----> IEEE float notation (4 byte, little endian)
+  * Floats -----> IEEE float notation (4 byte, **little endian!**)
   * Integers ---> 1 or 2 bytes (8 or 16 bits)
   * Binary -----> 1 byte
   * Date -------> 3 bytes (DD MM YY)
