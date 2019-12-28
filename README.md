@@ -40,6 +40,9 @@ You can enable them by setting the attribute `enableAdvancedMode` to `1`.
 
 To disable the adv. mode, just delete the attribute or set it to `0`.
 
+## Examples
+Check out [examples.md](/examples.md) to find some snippets for attributes and notifies.
+
 ## Protocol analysis
 By sending hexadecimal strings (**without the spaces**) to the serial interface of the control unit you can receive a response with some hexadecimal data.  
 
@@ -188,9 +191,6 @@ Save the file and close the text editor. The last step: Restart ser2net.
 ### Defining the ser2net-port in FHEM
 `define Heating WKRCD4 192.168.1.23:2000@9600 60`  
 It's basically like a normal define, just change the device to `IP:PORT`. (The port is 2000 in our case!)
-
-## Examples
-Check out [examples.md](/examples.md) to find some snippets for attributes and notifies.
 
 ## Screenshots
 ### SVG plot: Outside temperature
