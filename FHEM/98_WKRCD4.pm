@@ -560,7 +560,8 @@ sub WKRCD4_Set($@)
       }
       elsif($attr eq "statusRequest")
       {
-        WKRCD4_GetUpdate($hash);
+        # Request without adding new interval
+        WKRCD4_GetUpdate($hash, 0);
         return;
       }
       else
@@ -820,14 +821,17 @@ sub WKRCD4_Wakeup($)
 #
 # Request new data from WP
 #############################
-sub WKRCD4_GetUpdate($)
+sub WKRCD4_GetUpdate($;$)
 {
-    my ($hash) = @_;
+    my ($hash, $noInterval) = @_;
     my $name = $hash->{NAME};
 
     # Set time for new request every {INTERVAL} seconds
-    InternalTimer(gettimeofday()+$hash->{INTERVAL}, "WKRCD4_GetUpdate", $hash, 1);
-    InternalTimer(gettimeofday()+$hash->{INTERVAL}/2, "WKRCD4_Wakeup", $hash, 1);
+    if(!$noInterval)
+    {
+      InternalTimer(gettimeofday()+$hash->{INTERVAL}, "WKRCD4_GetUpdate", $hash, 1);
+      InternalTimer(gettimeofday()+$hash->{INTERVAL}/2, "WKRCD4_Wakeup", $hash, 1);
+    }
 
     $hash->{SerialRequests}++;
 
