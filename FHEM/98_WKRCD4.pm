@@ -883,7 +883,6 @@ sub WKRCD4_Attr($$$$)
       if($attrValue) {
         DevIo_CloseDev($hash);
         $hash->{buffer} = "";
-        SetState
       }
       else
       {
