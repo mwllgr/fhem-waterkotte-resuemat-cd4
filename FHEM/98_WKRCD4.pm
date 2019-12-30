@@ -297,7 +297,7 @@ sub WKRCD4_Initialize($)
     $hash->{UndefFn} = "WKRCD4_Undef";
     $hash->{SetFn}   = "WKRCD4_Set";
     $hash->{GetFn}   = "WKRCD4_Get";
-    $hash->{AttrList} = "enableAdvancedMode:0,1 do_not_notify:1,0 " . $readingFnAttributes;
+    $hash->{AttrList} = "enableAdvancedMode:0,1 do_not_notify:1,0 disable:0,1 " . $readingFnAttributes;
     $hash->{AttrFn} = "WKRCD4_Attr";
 }
 
@@ -325,9 +325,14 @@ sub WKRCD4_Define($$)
     }
 
     if(int(@a) == 4) {
-        $interval= $a[3];
-        if ($interval < 4) {
-            return "Error: Interval too small, min. 4, default is 60.";
+        $interval = $a[3];
+
+        if ($interval == 0) {
+          Log3 undef, 1, "$name: Interval is 0, automatic requests disabled.";
+        }
+        elsif ($interval < 4)
+        {
+          return "Error: Interval has to be > 3 or 0 (for no auto-requests), default is 60."
         }
     }
 
@@ -347,7 +352,10 @@ sub WKRCD4_Define($$)
     my $ret = DevIo_OpenDev( $hash, 0, "WKRCD4_Wakeup" );
 
     # Initial read after 3 secs, there timer is set to interval for update and wakeup
-    InternalTimer(gettimeofday()+3, "WKRCD4_GetUpdate", $hash, 0);
+    if($interval != 0)
+    {
+      InternalTimer(gettimeofday()+3, "WKRCD4_GetUpdate", $hash, 0);
+    }
 
     return $ret;
 }
@@ -418,6 +426,8 @@ sub WKRCD4_Get($@)
         return "Unknown argument $attr, choose one of " . join(":noArg ", @cList, '') . " menuEntry:textField menuEntryHidden:textField";
     }
 
+    return "Error: Device is disabled." if(IsDisabled($name));
+
     my $properties;
 
     if($attr eq "menuEntry" || $attr eq "menuEntryHidden")
@@ -480,7 +490,7 @@ sub WKRCD4_Set($@)
 {
     my ( $hash, @a ) = @_;
     return "\"set WKRCD4\" needs at least an argument" if ( @a < 2 );
-
+    
     my $name = shift @a;
     my $attr = shift @a;
     my $arg = join("", @a);
@@ -522,6 +532,8 @@ sub WKRCD4_Set($@)
 
         return "Unknown argument $attr, choose one of dateTimeSync:noArg statusRequest:noArg " . $finalReturn;
     }
+
+    return "Error: Device is disabled." if(IsDisabled($name));
 
     my $vp;
     my @value;
@@ -852,7 +864,8 @@ sub WKRCD4_GetUpdate($;$)
 sub WKRCD4_Attr($$$$)
 {
   my ( $cmd, $name, $attrName, $attrValue ) = @_;
-
+  my $hash = $defs{$name};
+  
   if ($cmd eq "set") {
     # Advanced mode: Enables the advanced readings
     if ($attrName eq "enableAdvancedMode") {
@@ -865,11 +878,28 @@ sub WKRCD4_Attr($$$$)
         return "Error: Valid values are 0 and 1.";
       }
     }
+    elsif ($attrName eq "disable")
+    { 
+      if($attrValue) {
+        DevIo_CloseDev($hash);
+        $hash->{buffer} = "";
+        SetState
+      }
+      else
+      {
+        $hash->{buffer} = "";
+        DevIo_OpenDev( $hash, 0, "WKRCD4_Wakeup" );
+      }
+    }
   }
   else
   {
     if ($attrName eq "enableAdvancedMode") {
       advancedMode(0);
+    }
+    elsif ($attrName eq "disable") {
+      DevIo_OpenDev( $hash, 0, "WKRCD4_Wakeup" );
+      $hash->{buffer} = "";
     }
   }
   
@@ -1046,6 +1076,8 @@ sub setBinaryReadings($)
      Enables or disables the advanced sets.<br>
      0 -> Disabled<br>
      1 -> Enabled</li>
+    <li>disable<br><br>
+    Enables or disables the device (closes the connection).</li>
   </ul>
  </ul> 
 
