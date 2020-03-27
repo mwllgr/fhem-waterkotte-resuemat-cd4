@@ -44,6 +44,8 @@ To disable the adv. mode, just delete the attribute or set it to `0`.
 Check out [examples.md](/examples.md) to find some snippets for attributes and notifies.
 
 ## Protocol analysis
+Protocol description reverse engineered and found in docs for "MOS protocol" by "Mühlhaus Prozessleittechnik GmbH".
+
 By sending hexadecimal strings (**without the spaces**) to the serial interface of the control unit you can receive a response with some hexadecimal data.  
 
 Please note: If the control unit doesn't respond, try sending "AT" and a carriage return:  
@@ -71,7 +73,7 @@ Example command to **read data**:
 ### Further explanation (CMD to read data)
 `10` - DLE (Data Link Escape)  
 `02` - STX (Start of Text)  
-`01 15` - CMD (Heat pump command, 01 15 means "Read memory")  
+`01 15` - SLAVE ADDR (typically 01) / CMD (Heat pump command, 15 means "Read memory")  
 `0000` - Start address  
 `0002` - Bytes to read at start address (if you start at 0x00, the max value is 0x152 with SW-Version 8011)  
 `10` - DLE (Data Link Escape)  
@@ -85,7 +87,7 @@ Example command to **write data**:
 
 ### Further explanation (CMD to write data)
 `10 02` - DLE / STX  
-`01 13` - CMD (Heat pump command, 01 13 means "Write memory")  
+`01 13` - SLAVE ADDR (typically 01) / CMD (Heat pump command, 13 means "Write memory")  
 `00BC` - Start address  
 `0000C841` - Bytes to write at start address (0000C841 is a float - 25.0)  
 `10 03` - DLE / ETX  
@@ -98,7 +100,7 @@ Example command to **sync the time/date**:
 
 ### Further explanation (CMD to sync time/date)
 `10 02` - DLE / STX  
-`01 14` - CMD (Heat pump command, 01 14 means "Write time/date memory")  
+`01 14` - SLAVE ADDR (typically 01) / CMD (Heat pump command, 14 means "Write time/date memory")  
 `0000` - Start address (maybe at RTC register?)  
 `1B 1E 0C` - SS:MM:HH (In that case: 27:30:12)  
 `16 02 13` - DD.MM.YY (In that case: 22.02.19)  
@@ -112,7 +114,7 @@ Example command to **start the logger (or show the contents?)**:
 
 ### Further explanation (CMD to start logger/show contents?)
 `10 02` - DLE / STX  
-`01 18` - CMD (Heat pump command, 01 18 means "Start logger" (?, or "Show logger contents"?)  
+`01 18` - SLAVE ADDR (typically 01) / CMD (Heat pump command, 01 18 means "Start logger" (?, or "Show logger contents"?)  
 `0000` - Start address (?)  
 `001A` - Bytes to read at start address (?)  
 `10 03` - DLE / ETX  
