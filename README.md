@@ -4,7 +4,11 @@
 ### Disclaimer
 Do **not set any values** if the corresponding readings don't match the displayed data on the control unit itself or if any other readings are not correct! I'm not responsible for any damage!
 
+### Standalone version
+This module is for the FHEM home automation server written in Perl. If you do not have a FHEM server you can use my project [java-wtkcontrol](https://github.com/mwllgr/java-wtkcontrol), a standalone version for the same use case which includes a CLI and GUI interface. Thus, the protocol description in this README applies to the standalone project too.
+
 ### About the module
+
 **This module will not work for your heat pump if the official one (by user [StefanStrobel](https://wiki.fhem.de/wiki/Benutzer:StefanStrobel)) works for you! - It uses different memory addresses!** Successfully tested with a Resümat CD4 with software version 8011 (should work on 7000 and 8000 too) on a _DS 5009.3_ heat pump.
 
 If it does not work for you, try to use the official module as seen in the [FHEM wiki](https://wiki.fhem.de/wiki/Waterkotte_heat_pump_with_Res%C3%BCmat_CD4).  
